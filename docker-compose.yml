@@ -1,7 +1,25 @@
 version: "3.7"
+
+networks:
+  app:
+    driver: bridge
+
 services:
+  redis:
+    image: redis:alpine
+    networks:
+      - app
+    ports:
+      - "6379:6379"
+
   api:
     build: .
+    networks:
+      - app
     ports: 
       - "4242:8080"
+    depends_on:
+      - redis
+    links:
+      - redis
 # TODO: postgresql

@@ -5,4 +5,11 @@ type Config struct {
 		Port       int  `toml:"port"`
 		Production bool `toml:"production"`
 	}
+
+	DB struct {
+		Redis struct {
+			Url   string `toml:"url"`
+			Reset bool   `toml:"reset"`
+		}
+	}
 }

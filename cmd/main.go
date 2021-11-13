@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"ofsahof/library-management/database"
 	"ofsahof/library-management/pkg/types"
 	"ofsahof/library-management/pkg/utils"
 
@@ -21,5 +22,14 @@ func main() {
 	})
 
 	fmt.Println(config)
+
+	db := database.Init()
+
+	db.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
+
+	db.Redis.Set("d", []byte("d"), 1000)
+
+	fmt.Print(db.Redis.Get("d"))
+
 	app.Listen(":8080")
 }

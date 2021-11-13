@@ -1,3 +1,7 @@
 [app]
 port = 8080
 production = false
+
+[db.redis]
+url = "redis://127.0.0.1:6379/"
+reset = false
