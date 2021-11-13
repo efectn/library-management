@@ -13,7 +13,9 @@ services:
       - "6379:6379"
 
   api:
-    build: .
+    build: 
+      context: .
+      dockerfile: build/Dockerfile
     networks:
       - app
     ports: 
