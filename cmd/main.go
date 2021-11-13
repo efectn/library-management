@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"ofsahof/library-management/database"
-	"ofsahof/library-management/pkg/types"
-	"ofsahof/library-management/pkg/utils"
+
+	"github.com/ofsahof/library-management/database"
+	"github.com/ofsahof/library-management/pkg/types"
+	"github.com/ofsahof/library-management/pkg/utils"
 
 	"github.com/BurntSushi/toml"
 	"github.com/gofiber/fiber/v2"
