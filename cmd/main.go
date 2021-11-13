@@ -15,6 +15,7 @@ func main() {
 
 	db := database.Init()
 	db.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
+	db.SetupGORM(config.DB.Postgres.Host, config.DB.Postgres.Port, config.DB.Postgres.Name, config.DB.Postgres.User, config.DB.Postgres.Password)
 
 	app := fiber.New()
 
