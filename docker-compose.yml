@@ -1,14 +1,29 @@
 version: "3.7"
 
 networks:
-  app:
+  default:
     driver: bridge
 
 services:
+  api:
+    build: 
+      context: .
+      dockerfile: build/Dockerfile
+    networks:
+      - default
+    ports: 
+      - "4242:8080"
+    depends_on:
+      - redis
+      - postgres
+    links:
+      - redis
+      - postgres
+      
   redis:
     image: redis:alpine
     networks:
-      - app
+      - default
     ports:
       - "6379:6379"
 
@@ -19,21 +34,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     networks:
-      - app
+      - default
     ports:
       - "5432:5432"
-
-  api:
-    build: 
-      context: .
-      dockerfile: build/Dockerfile
-    networks:
-      - app
-    ports: 
-      - "4242:8080"
-    depends_on:
-      - redis
-      - postgres
-    links:
-      - redis
-      - postgres
