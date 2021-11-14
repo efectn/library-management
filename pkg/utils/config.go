@@ -24,10 +24,10 @@ type Config struct {
 	}
 }
 
-func ParseConfig(config string) (*Config, error) {
+func ParseConfig(filename string) (*Config, error) {
 	var contents *Config
 
-	_, err := toml.DecodeFile("./config/"+config+".toml", &contents)
+	_, err := toml.DecodeFile("./config/"+filename+".toml", &contents)
 	if err != nil {
 		return &Config{}, err
 	}
