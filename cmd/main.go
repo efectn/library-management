@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ofsahof/library-management/pkg/database"
+	"github.com/ofsahof/library-management/pkg/routes"
 	"github.com/ofsahof/library-management/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +12,9 @@ import (
 
 func main() {
 	config, err := utils.ParseConfig("config")
-	utils.Check(err)
+	if err != nil {
+		panic(err)
+	}
 
 	db := database.Init()
 	db.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
@@ -19,9 +22,7 @@ func main() {
 
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World !!")
-	})
+	routes.RegisterAPIRoutes(app)
 
 	app.Listen(fmt.Sprintf(":%d", config.App.Port))
 }
