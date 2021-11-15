@@ -12,3 +12,7 @@ port = 5432
 name = "library_management"
 user = "postgres"
 password = "postgres"
+
+[middleware.jwt]
+secret = "UjXn2r5u8x/A?D(G+KbPeSgVkYp3s6v9"
+hours = 5

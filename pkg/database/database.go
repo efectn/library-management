@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/storage/redis"
+	"github.com/ofsahof/library-management/pkg/database/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,6 +13,10 @@ type Database struct {
 	Gorm  *gorm.DB
 	Redis *redis.Storage
 }
+
+var DB = new(Database)
+
+var modelsToMigrate = []interface{}{&models.Users{}}
 
 func Init() *Database {
 	return new(Database)
@@ -38,4 +43,8 @@ func (db *Database) SetupRedis(url string, reset bool) error {
 	db.Redis = conn
 
 	return nil
+}
+
+func (db *Database) MigrateModels() error {
+	return db.Gorm.AutoMigrate(modelsToMigrate...)
 }

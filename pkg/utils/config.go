@@ -1,8 +1,12 @@
 package utils
 
-import "github.com/BurntSushi/toml"
+import (
+	"time"
 
-type Config struct {
+	"github.com/BurntSushi/toml"
+)
+
+type ConfigBase struct {
 	App struct {
 		Port       int  `toml:"port"`
 		Production bool `toml:"production"`
@@ -22,14 +26,23 @@ type Config struct {
 			Password string `toml:"password"`
 		}
 	}
+
+	Middleware struct {
+		Jwt struct {
+			Key   string
+			Hours time.Duration
+		}
+	}
 }
 
-func ParseConfig(filename string) (*Config, error) {
-	var contents *Config
+var Config = new(ConfigBase)
+
+func ParseConfig(filename string) (*ConfigBase, error) {
+	var contents *ConfigBase
 
 	_, err := toml.DecodeFile("./config/"+filename+".toml", &contents)
 	if err != nil {
-		return &Config{}, err
+		return &ConfigBase{}, err
 	}
 
 	return contents, err

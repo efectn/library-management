@@ -15,14 +15,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	utils.Config = config
 
-	db := database.Init()
-	db.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
-	db.SetupGORM(config.DB.Postgres.Host, config.DB.Postgres.Port, config.DB.Postgres.Name, config.DB.Postgres.User, config.DB.Postgres.Password)
+	database.DB.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
+	database.DB.SetupGORM(config.DB.Postgres.Host, config.DB.Postgres.Port, config.DB.Postgres.Name, config.DB.Postgres.User, config.DB.Postgres.Password)
+	database.DB.MigrateModels()
 
 	app := fiber.New()
 
-	routes.RegisterAPIRoutes(app)
+	routes.RegisterAPIRoutes(app, config)
 
 	app.Listen(fmt.Sprintf(":%d", config.App.Port))
 }

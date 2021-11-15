@@ -2,12 +2,25 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
+	jwtware "github.com/gofiber/jwt/v3"
 	"github.com/ofsahof/library-management/pkg/controllers"
+	"github.com/ofsahof/library-management/pkg/utils"
 )
 
 var userController controllers.UserController
+var authController controllers.AuthController
 
-func RegisterAPIRoutes(app fiber.Router) {
+func RegisterAPIRoutes(app fiber.Router, config *utils.ConfigBase) {
+	// Auth Routes
+	app.Post("/register", authController.Register)
+	app.Post("/login", authController.Login)
+
+	// JWT Middleware
+	app.Use(jwtware.New(jwtware.Config{
+		SigningKey: []byte(config.Middleware.Jwt.Key),
+	}))
+
+	// Restricted Routes
 	users := app.Group("/users")
 
 	users.Get("/", userController.Index)

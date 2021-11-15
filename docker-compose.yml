@@ -37,3 +37,15 @@ services:
       - default
     ports:
       - "5432:5432"
+
+  pgweb:
+    restart: always 
+    image: sosedoff/pgweb
+    ports: 
+      - "8081:8081" 
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/library_management?sslmode=disable
+    depends_on:
+      - postgres
+    links:
+      - postgres  
