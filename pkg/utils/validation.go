@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
 )
 
 type errorResponse struct {
@@ -25,4 +26,12 @@ func ValidateStruct(input interface{}) []*errorResponse {
 	}
 
 	return errors
+}
+
+func ParseBody(c *fiber.Ctx, body interface{}) error {
+	if err := c.BodyParser(body); err != nil {
+		return ReturnErrorMessage(c, err)
+	}
+
+	return nil
 }

@@ -34,10 +34,7 @@ type LoginRequest struct {
 
 func (AuthController) Register(c *fiber.Ctx) error {
 	u := new(RegisterRequest)
-
-	if err := c.BodyParser(u); err != nil {
-		return utils.ReturnErrorMessage(c, err)
-	}
+	utils.ParseBody(c, u)
 
 	validate := utils.ValidateStruct(*u)
 	if validate != nil {
@@ -73,10 +70,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 func (AuthController) Login(c *fiber.Ctx) error {
 	var user models.Users
 	u := new(LoginRequest)
-
-	if err := c.BodyParser(u); err != nil {
-		return utils.ReturnErrorMessage(c, err)
-	}
+	utils.ParseBody(c, u)
 
 	validate := utils.ValidateStruct(*u)
 	if validate != nil {
