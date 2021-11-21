@@ -16,7 +16,7 @@ type Database struct {
 
 var DB = new(Database)
 
-var modelsToMigrate = []interface{}{&models.Users{}}
+var modelsToMigrate = []interface{}{&models.Users{}, &models.Role{}, &models.Permission{}}
 
 func Init() *Database {
 	return new(Database)

@@ -13,4 +13,5 @@ type Users struct {
 	Country  string
 	ZipCode  int
 	Address  string
+	Roles    []Role `gorm:"many2many:user_roles;constraint:OnDelete:CASCADE;"`
 }
