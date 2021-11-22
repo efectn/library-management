@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ofsahof/library-management/pkg/database"
+	"github.com/ofsahof/library-management/pkg/database/seeds"
 	"github.com/ofsahof/library-management/pkg/routes"
 	"github.com/ofsahof/library-management/pkg/utils"
 
@@ -20,6 +21,7 @@ func main() {
 	database.DB.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
 	database.DB.SetupGORM(config.DB.Postgres.Host, config.DB.Postgres.Port, config.DB.Postgres.Name, config.DB.Postgres.User, config.DB.Postgres.Password)
 	database.DB.MigrateModels()
+	seeds.SeedModels(seeds.UserSeeder{})
 
 	app := fiber.New()
 
