@@ -1,12 +1,14 @@
-package utils
+package config
 
 import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 )
 
-type ConfigBase struct {
+type Config struct {
 	App struct {
 		Port       int  `toml:"port"`
 		Production bool `toml:"production"`
@@ -32,18 +34,34 @@ type ConfigBase struct {
 			Key   string
 			Hours time.Duration
 		}
+
+		Compress struct {
+			Enable bool
+			Level  compress.Level
+		}
+
+		Recover struct {
+			Enable bool
+		}
 	}
 }
 
-var Config = new(ConfigBase)
-
-func ParseConfig(filename string) (*ConfigBase, error) {
-	var contents *ConfigBase
+func ParseConfig(filename string) (*Config, error) {
+	var contents *Config
 
 	_, err := toml.DecodeFile("./config/"+filename+".toml", &contents)
 	if err != nil {
-		return &ConfigBase{}, err
+		return &Config{}, err
 	}
 
 	return contents, err
+}
+
+func IsEnabled(key bool) func(c *fiber.Ctx) bool {
+	enabled := true
+	if key {
+		enabled = false
+	}
+
+	return func(c *fiber.Ctx) bool { return enabled }
 }

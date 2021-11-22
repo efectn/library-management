@@ -16,3 +16,10 @@ password = "postgres"
 [middleware.jwt]
 secret = "UjXn2r5u8x/A?D(G+KbPeSgVkYp3s6v9"
 hours = 5
+
+[middleware.compress]
+enable = true
+level = 1
+
+[middleware.recover]
+enable = true

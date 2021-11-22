@@ -3,7 +3,6 @@ package database
 import (
 	"fmt"
 
-	"github.com/efectn/library-management/pkg/database/models"
 	"github.com/gofiber/storage/redis"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -14,9 +13,10 @@ type Database struct {
 	Redis *redis.Storage
 }
 
-var DB = new(Database)
-
-var modelsToMigrate = []interface{}{&models.Users{}, &models.Role{}, &models.Permission{}}
+type Seeder interface {
+	Seed()
+	ReturnModel() interface{}
+}
 
 func Init() *Database {
 	return new(Database)
@@ -45,6 +45,19 @@ func (db *Database) SetupRedis(url string, reset bool) error {
 	return nil
 }
 
-func (db *Database) MigrateModels() error {
-	return db.Gorm.AutoMigrate(modelsToMigrate...)
+func (db *Database) MigrateModels(models ...interface{}) error {
+	return db.Gorm.AutoMigrate(models...)
+}
+
+func (db *Database) SeedModels(seeder ...Seeder) {
+	for _, v := range seeder {
+		var count int64 = 0
+		db.Gorm.Model(v.ReturnModel()).Count(&count)
+
+		if count < 0 {
+			v.Seed()
+		} else {
+			fmt.Print("=====> WARN: Table has seeded already. Skipping!")
+		}
+	}
 }

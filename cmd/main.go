@@ -1,31 +1,41 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/efectn/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/app"
+	"github.com/efectn/library-management/pkg/database/models"
 	"github.com/efectn/library-management/pkg/database/seeds"
 	"github.com/efectn/library-management/pkg/routes"
-	"github.com/efectn/library-management/pkg/utils"
-
-	"github.com/gofiber/fiber/v2"
+	"github.com/efectn/library-management/pkg/utils/config"
 )
 
 func main() {
-	config, err := utils.ParseConfig("config")
+	// Parse Config
+	config, err := config.ParseConfig("config")
 	if err != nil {
 		panic(err)
 	}
-	utils.Config = config
 
-	database.DB.SetupRedis(config.DB.Redis.Url, config.DB.Redis.Reset)
-	database.DB.SetupGORM(config.DB.Postgres.Host, config.DB.Postgres.Port, config.DB.Postgres.Name, config.DB.Postgres.User, config.DB.Postgres.Password)
-	database.DB.MigrateModels()
-	seeds.SeedModels(seeds.UserSeeder{})
+	// Init App
+	app.App = app.New(config)
 
-	app := fiber.New()
+	// Database
+	err = app.App.SetupDB()
+	if err != nil {
+		panic(err)
+	}
 
-	routes.RegisterAPIRoutes(app, config)
+	err = app.App.DB.MigrateModels(&models.Users{}, &models.Role{}, &models.Permission{})
+	if err != nil {
+		panic(err)
+	}
 
-	app.Listen(fmt.Sprintf(":%d", config.App.Port))
+	app.App.DB.SeedModels(seeds.UserSeeder{})
+
+	// Register Routes & Listen
+	routes.RegisterAPIRoutes(app.App.Fiber, config)
+
+	err = app.App.Listen()
+	if err != nil {
+		panic(err)
+	}
 }
