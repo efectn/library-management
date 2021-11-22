@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ofsahof/library-management/pkg/database"
-	"github.com/ofsahof/library-management/pkg/database/models"
+	"github.com/efectn/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/database/models"
 	"gorm.io/gorm"
 )
 

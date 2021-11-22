@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 
-	"github.com/ofsahof/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/database"
 )
 
 func SeederFunc(model interface{}, message string) {

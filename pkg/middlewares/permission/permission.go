@@ -1,9 +1,9 @@
 package permission
 
 import (
+	"github.com/efectn/library-management/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/ofsahof/library-management/pkg/utils"
 )
 
 func New(name string) fiber.Handler {

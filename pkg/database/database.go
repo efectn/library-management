@@ -3,8 +3,8 @@ package database
 import (
 	"fmt"
 
+	"github.com/efectn/library-management/pkg/database/models"
 	"github.com/gofiber/storage/redis"
-	"github.com/ofsahof/library-management/pkg/database/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

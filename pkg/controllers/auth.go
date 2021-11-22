@@ -4,11 +4,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/efectn/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/database/models"
+	"github.com/efectn/library-management/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/ofsahof/library-management/pkg/database"
-	"github.com/ofsahof/library-management/pkg/database/models"
-	"github.com/ofsahof/library-management/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

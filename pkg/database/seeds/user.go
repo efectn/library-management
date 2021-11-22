@@ -1,8 +1,8 @@
 package seeds
 
 import (
-	"github.com/ofsahof/library-management/pkg/database/models"
-	"github.com/ofsahof/library-management/pkg/utils"
+	"github.com/efectn/library-management/pkg/database/models"
+	"github.com/efectn/library-management/pkg/utils"
 )
 
 type UserSeeder struct{}

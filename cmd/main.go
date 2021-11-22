@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/ofsahof/library-management/pkg/database"
-	"github.com/ofsahof/library-management/pkg/database/seeds"
-	"github.com/ofsahof/library-management/pkg/routes"
-	"github.com/ofsahof/library-management/pkg/utils"
+	"github.com/efectn/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/database/seeds"
+	"github.com/efectn/library-management/pkg/routes"
+	"github.com/efectn/library-management/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
 )

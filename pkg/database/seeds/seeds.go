@@ -3,7 +3,7 @@ package seeds
 import (
 	"fmt"
 
-	"github.com/ofsahof/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/database"
 )
 
 type Seeder interface {

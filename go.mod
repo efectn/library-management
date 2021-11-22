@@ -1,4 +1,4 @@
-module github.com/ofsahof/library-management
+module github.com/efectn/library-management
 
 go 1.16
 

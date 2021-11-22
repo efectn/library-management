@@ -1,10 +1,10 @@
 package routes
 
 import (
+	"github.com/efectn/library-management/pkg/controllers"
+	"github.com/efectn/library-management/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
-	"github.com/ofsahof/library-management/pkg/controllers"
-	"github.com/ofsahof/library-management/pkg/utils"
 )
 
 var userController controllers.UserController
