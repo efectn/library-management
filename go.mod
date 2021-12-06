@@ -18,6 +18,6 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.1.0
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
-	gorm.io/driver/postgres v1.2.2
+	gorm.io/driver/postgres v1.2.3
 	gorm.io/gorm v1.22.3
 )
