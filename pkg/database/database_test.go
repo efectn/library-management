@@ -18,6 +18,7 @@ func init() {
 }
 
 func Test_Redis_Set(t *testing.T) {
+        t.Parallel()
 	assert := assert.New(t)
 
 	err := testStore.Redis.Set(key, value, 0)
@@ -25,6 +26,7 @@ func Test_Redis_Set(t *testing.T) {
 }
 
 func Test_Redis_Get(t *testing.T) {
+        t.Parallel()
 	assert := assert.New(t)
 
 	err := testStore.Redis.Set(key, value, 0)
@@ -36,6 +38,7 @@ func Test_Redis_Get(t *testing.T) {
 }
 
 func Test_Redis_Delete(t *testing.T) {
+        t.Parallel()
 	assert := assert.New(t)
 
 	err := testStore.Redis.Set(key, value, 0)
@@ -50,6 +53,7 @@ func Test_Redis_Delete(t *testing.T) {
 }
 
 func Test_Redis_NotExists(t *testing.T) {
+        t.Parallel()
 	assert := assert.New(t)
 
 	data, err := testStore.Redis.Get(key)
@@ -58,6 +62,7 @@ func Test_Redis_NotExists(t *testing.T) {
 }
 
 func Test_Redis_Close(t *testing.T) {
+        t.Parallel()
 	assert := assert.New(t)
 
 	assert.Equal(testStore.Redis.Close(), nil)
