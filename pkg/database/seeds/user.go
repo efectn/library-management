@@ -25,7 +25,10 @@ var users = []models.Users{
 }
 
 func (UserSeeder) Seed() {
-	utils.SeederFunc(&users, "Users")
+	utils.SeederFunc(&users, "Users", func() {
+		utils.Authority{}.AssignRole(users[0].ID, "Admin")
+		utils.Authority{}.AssignRole(users[1].ID, "User")
+	})
 }
 
 func (UserSeeder) ReturnModel() interface{} {

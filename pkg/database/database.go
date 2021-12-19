@@ -54,10 +54,10 @@ func (db *Database) SeedModels(seeder ...Seeder) {
 		var count int64 = 0
 		db.Gorm.Model(v.ReturnModel()).Count(&count)
 
-		if count < 0 {
+		if count == 0 {
 			v.Seed()
 		} else {
-			fmt.Print("=====> WARN: Table has seeded already. Skipping!")
+			fmt.Println("=====> WARN: Table has seeded already. Skipping!")
 		}
 	}
 }

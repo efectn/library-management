@@ -29,7 +29,7 @@ func main() {
 		panic(err)
 	}
 
-	app.App.DB.SeedModels(seeds.UserSeeder{})
+	app.App.DB.SeedModels(seeds.PermissionSeeder{}, seeds.RoleSeeder{}, seeds.UserSeeder{})
 
 	// Register Routes & Listen
 	routes.RegisterAPIRoutes(app.App.Fiber, config)
