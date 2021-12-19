@@ -1,24 +1,22 @@
 package utils
 
 import (
-	"fmt"
-
-	"github.com/efectn/library-management/pkg/app"
+	"github.com/efectn/library-management/pkg/globals"
 	"gorm.io/gorm/clause"
 )
 
 func SeederFunc(model interface{}, message string, customFuncs ...func()) {
-	if err := app.App.DB.Gorm.Clauses(clause.OnConflict{
+	if err := globals.App.DB.Gorm.Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).Create(model); err.Error != nil {
-		fmt.Printf("\n=====> ERROR: %v\n", err.Error)
+		globals.App.Logger.Panic().Err(err.Error).Msg("")
 	}
 
-	app.App.DB.Gorm.Save(model)
+	globals.App.DB.Gorm.Save(model)
 
 	for _, customFunc := range customFuncs {
 		customFunc()
 	}
 
-	fmt.Println("=====> INFO: " + message + " has seeded successfully!")
+	globals.App.Logger.Info().Msg(message + " has seeded successfully!")
 }

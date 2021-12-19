@@ -1,17 +1,27 @@
 package config
 
 import (
+	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/rs/zerolog"
 )
 
 type Config struct {
 	App struct {
-		Port       int  `toml:"port"`
-		Production bool `toml:"production"`
+		Name       string `toml:"name"`
+		Port       string `toml:"port"`
+		Prefork    bool   `toml:"prefork"`
+		Production bool   `toml:"production"`
+	}
+
+	Logger struct {
+		TimeFormat string        `toml:"time-format"`
+		Level      zerolog.Level `toml:"level"`
+		Prettier   bool          `toml:"prettier"`
 	}
 
 	DB struct {
@@ -64,4 +74,12 @@ func IsEnabled(key bool) func(c *fiber.Ctx) bool {
 	}
 
 	return func(c *fiber.Ctx) bool { return enabled }
+}
+
+// From https://github.com/gofiber/fiber/blob/master/helpers.go#L305.
+func ParseAddr(raw string) (host, port string) {
+	if i := strings.LastIndex(raw, ":"); i != -1 {
+		return raw[:i], raw[i+1:]
+	}
+	return raw, ""
 }

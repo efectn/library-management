@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gofiber/storage/redis"
+	"github.com/rs/zerolog/log"
+	_ "github.com/rs/zerolog/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -57,7 +59,7 @@ func (db *Database) SeedModels(seeder ...Seeder) {
 		if count == 0 {
 			v.Seed()
 		} else {
-			fmt.Println("=====> WARN: Table has seeded already. Skipping!")
+			log.Warn().Msg("Table has seeded already. Skipping!")
 		}
 	}
 }

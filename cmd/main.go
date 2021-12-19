@@ -4,38 +4,48 @@ import (
 	"github.com/efectn/library-management/pkg/app"
 	"github.com/efectn/library-management/pkg/database/models"
 	"github.com/efectn/library-management/pkg/database/seeds"
+	"github.com/efectn/library-management/pkg/globals"
 	"github.com/efectn/library-management/pkg/routes"
 	"github.com/efectn/library-management/pkg/utils/config"
+	"github.com/rs/zerolog/log"
 )
 
+// Fix:
+// - Prefork not working with zerolog.
 func main() {
 	// Parse Config
 	config, err := config.ParseConfig("config")
 	if err != nil {
-		panic(err)
+		log.Panic().Err(err).Msg("")
 	}
 
 	// Init App
-	app.App = app.New(config)
+	globals.App = app.New(config)
+
+	// Logger
+	globals.App.SetupLogger()
 
 	// Database
-	err = app.App.SetupDB()
+	err = globals.App.SetupDB()
 	if err != nil {
-		panic(err)
+		globals.App.Logger.Panic().Err(err).Msg("")
 	}
 
-	err = app.App.DB.MigrateModels(&models.Users{}, &models.Role{}, &models.Permission{})
+	// Migrate
+	err = globals.App.DB.MigrateModels(&models.Users{}, &models.Role{}, &models.Permission{})
 	if err != nil {
-		panic(err)
+		globals.App.Logger.Panic().Err(err).Msg("")
 	}
 
-	app.App.DB.SeedModels(seeds.PermissionSeeder{}, seeds.RoleSeeder{}, seeds.UserSeeder{})
+	// Seed
+	globals.App.DB.SeedModels(seeds.PermissionSeeder{}, seeds.RoleSeeder{}, seeds.UserSeeder{})
 
 	// Register Routes & Listen
-	routes.RegisterAPIRoutes(app.App.Fiber, config)
+	routes.RegisterAPIRoutes(globals.App.Fiber, config)
 
-	err = app.App.Listen()
+	// Listen the app
+	err = globals.App.Listen()
 	if err != nil {
-		panic(err)
+		globals.App.Logger.Panic().Err(err).Msg("")
 	}
 }

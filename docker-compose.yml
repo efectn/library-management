@@ -19,6 +19,8 @@ services:
     links:
       - redis
       - postgres
+    #volumes:
+    #  - ./:/app
       
   redis:
     image: redis:alpine
