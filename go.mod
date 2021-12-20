@@ -16,7 +16,7 @@ require (
 	github.com/gofiber/jwt/v3 v3.2.2
 	github.com/gofiber/storage/redis v0.0.0-20211018071720-3d9778b4da19
 	github.com/golang-jwt/jwt/v4 v4.2.0
-	github.com/rs/zerolog v1.26.1 // indirect
+	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e
 	gorm.io/driver/postgres v1.2.3

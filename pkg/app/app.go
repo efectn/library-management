@@ -93,19 +93,34 @@ func (app *AppSkel) Listen() error {
 		}
 	}
 
-	prefork := "Enabled"
-	procs := runtime.GOMAXPROCS(0)
-	if !app.Config.App.Prefork {
-		procs = 1
-		prefork = "Disabled"
-	}
+	// ASCII Art
+	app.Logger.Info().Msg("█████       ██████   ██████  █████████   ")
+	app.Logger.Info().Msg("░░███       ░░██████ ██████  ███░░░░░███ ")
+	app.Logger.Info().Msg(" ░███        ░███░█████░███ ░███    ░░░  ")
+	app.Logger.Info().Msg(" ░███        ░███░░███ ░███ ░░█████████  ")
+	app.Logger.Info().Msg(" ░███        ░███ ░░░  ░███  ░░░░░░░░███ ")
+	app.Logger.Info().Msg(" ░███      █ ░███      ░███  ███    ░███ ")
+	app.Logger.Info().Msg(" ███████████ █████     █████░░█████████  ")
+	app.Logger.Info().Msg("░░░░░░░░░░░ ░░░░░     ░░░░░  ░░░░░░░░░   ")
 
+	// Information message
 	app.Logger.Info().Msg(app.Fiber.Config().AppName + " is running at the moment!")
-	app.Logger.Debug().Msgf("Host: %s", host)
-	app.Logger.Debug().Msgf("Port: %s", port)
-	app.Logger.Debug().Msgf("Prefork: %s", prefork)
-	app.Logger.Debug().Msgf("Processes: %d", procs)
-	app.Logger.Debug().Msgf("PID: %d", os.Getpid())
+
+	// Debug informations
+	if !app.Config.App.Production {
+		prefork := "Enabled"
+		procs := runtime.GOMAXPROCS(0)
+		if !app.Config.App.Prefork {
+			procs = 1
+			prefork = "Disabled"
+		}
+
+		app.Logger.Debug().Msgf("Host: %s", host)
+		app.Logger.Debug().Msgf("Port: %s", port)
+		app.Logger.Debug().Msgf("Prefork: %s", prefork)
+		app.Logger.Debug().Msgf("Processes: %d", procs)
+		app.Logger.Debug().Msgf("PID: %d", os.Getpid())
+	}
 
 	// Listen the app
 	err := app.Fiber.Listen(app.Config.App.Port)
