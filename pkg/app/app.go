@@ -101,11 +101,11 @@ func (app *AppSkel) Listen() error {
 	}
 
 	app.Logger.Info().Msg(app.Fiber.Config().AppName + " is running at the moment!")
-	app.Logger.Info().Msgf("Host: %s", host)
-	app.Logger.Info().Msgf("Port: %s", port)
-	app.Logger.Info().Msgf("Prefork: %s", prefork)
-	app.Logger.Info().Msgf("Processes: %d", procs)
-	app.Logger.Info().Msgf("PID: %d", os.Getpid())
+	app.Logger.Debug().Msgf("Host: %s", host)
+	app.Logger.Debug().Msgf("Port: %s", port)
+	app.Logger.Debug().Msgf("Prefork: %s", prefork)
+	app.Logger.Debug().Msgf("Processes: %d", procs)
+	app.Logger.Debug().Msgf("PID: %d", os.Getpid())
 
 	// Listen the app
 	err := app.Fiber.Listen(app.Config.App.Port)
