@@ -1,3 +1,4 @@
+# Configuration vars for cmd/app
 [app]
 name = "LMS app"
 port = ":8080"
@@ -5,7 +6,7 @@ prefork = false
 production = false
 
 [logger]
-time-format = "" # https://pkg.go.dev/time#pkg-constants, https://github.com/rs/zerolog/blob/master/globals.go#L10 
+time-format = "" # https://pkg.go.dev/time#pkg-constants, https://github.com/rs/zerolog/blob/master/api.go#L10 
 level = 0 # panic -> 5, fatal -> 4, error -> 3, warn -> 2, info -> 1, debug -> 0, trace -> -1
 prettier = true
 

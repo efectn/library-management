@@ -9,7 +9,7 @@ RUN apk update && apk add ca-certificates openssl && update-ca-certificates
 #RUN chmod +x install.sh && sh install.sh 
 #COPY bin/air /bin/air
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/app-binary ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/app-binary ./cmd/api/main.go
 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /app/

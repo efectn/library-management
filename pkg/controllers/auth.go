@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/efectn/library-management/pkg/database/models"
-	"github.com/efectn/library-management/pkg/globals"
+	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -46,7 +46,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		return utils.ReturnErrorMessage(c, err)
 	}
 
-	res := globals.App.DB.Gorm.Create(&models.Users{Email: u.Email,
+	res := api.App.DB.Gorm.Create(&models.Users{Email: u.Email,
 		Password: string(password),
 		Name:     u.Name,
 		Phone:    u.Phone,
@@ -78,7 +78,7 @@ func (AuthController) Login(c *fiber.Ctx) error {
 	}
 
 	// Check exists
-	res := globals.App.DB.Gorm.Where("email = ?", u.Email).First(&user)
+	res := api.App.DB.Gorm.Where("email = ?", u.Email).First(&user)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return utils.ReturnErrorMessage(c, errors.New("user not found"), fiber.StatusNotFound)
@@ -89,13 +89,13 @@ func (AuthController) Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(u.Password)); err == nil {
 		claims := jwt.MapClaims{
 			"fields": user,
-			"exp":    time.Now().Add(time.Hour * globals.App.Config.Middleware.Jwt.Hours).Unix(),
+			"exp":    time.Now().Add(time.Hour * api.App.Config.Middleware.Jwt.Hours).Unix(),
 		}
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 		// Generate encoded token and send it as response.
-		t, err := token.SignedString([]byte(globals.App.Config.Middleware.Jwt.Key))
+		t, err := token.SignedString([]byte(api.App.Config.Middleware.Jwt.Key))
 		if err != nil {
 			return utils.ReturnErrorMessage(c, err)
 		}

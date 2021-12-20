@@ -1,4 +1,4 @@
-package app
+package webserver
 
 import (
 	"os"
@@ -82,7 +82,7 @@ func (h PreforkHook) Run(e *zerolog.Event, level zerolog.Level, msg string) {
 	}
 }
 
-func (app *AppSkel) Listen() error {
+func (app *AppSkel) Run() error {
 	// Custom Startup Messages
 	host, port := config.ParseAddr(app.Config.App.Port)
 	if host == "" {
