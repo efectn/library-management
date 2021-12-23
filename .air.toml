@@ -3,7 +3,7 @@ tmp_dir = "tmp"
 
 [build]
   bin = "./tmp/main"
-  cmd = "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./cmd/main.go"
+  cmd = "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./tmp/main ./cmd/api/main.go"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor"]
   exclude_file = []
