@@ -40,11 +40,10 @@ github.com/go-redis/redis/v8 v8.11.4/go.mod h1:2Z2wHZXdQpCDXEGzqMockDpNyYvi2l4Px
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg7847qk6SyHyPtNmDHnmrv/HOrqktSC+C9fM+CJOE=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
-github.com/gofiber/fiber/v2 v2.23.0/go.mod h1:MR1usVH3JHYRyQwMe2eZXRSZHRX38fkV+A7CPB+DlDQ=
 github.com/gofiber/fiber/v2 v2.24.0 h1:18rpLoQMJBVlLtX/PwgHj3hIxPSeWfN1YeDJ2lEnzjU=
 github.com/gofiber/fiber/v2 v2.24.0/go.mod h1:MR1usVH3JHYRyQwMe2eZXRSZHRX38fkV+A7CPB+DlDQ=
-github.com/gofiber/jwt/v3 v3.2.2 h1:ARz4y2bAx1ZjSKyv9Yl7QGjvUzAv3MI3MQ56lum43Go=
-github.com/gofiber/jwt/v3 v3.2.2/go.mod h1:ekuolLmndJPtPk8K9BXvWE5JnMO5/ho3rI1ko0Xc0lM=
+github.com/gofiber/jwt/v3 v3.2.3 h1:p0Eraucxe7TpTPkkCHXiOu+m6UKknTvF+3Qgf/42vdA=
+github.com/gofiber/jwt/v3 v3.2.3/go.mod h1:f+cElEcz58ogfz64nolcxiy7FCrC5At9dJR8RZNG9Ow=
 github.com/gofiber/storage/redis v0.0.0-20211018071720-3d9778b4da19 h1:zbeTbCdO6Xe1vYj3EKqwSG+8+DcvNdZeDgvU4zNz8sw=
 github.com/gofiber/storage/redis v0.0.0-20211018071720-3d9778b4da19/go.mod h1:Ld3u23Fm4CzWXfVQLf1PhHFr0mif4jeHQMVy53LD4NE=
 github.com/gofiber/utils v0.1.2 h1:1SH2YEz4RlNS0tJlMJ0bGwO0JkqPqvq6TbHK9tXZKtk=
