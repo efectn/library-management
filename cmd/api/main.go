@@ -50,12 +50,6 @@ func Execute() {
 		api.App.Logger.Panic().Err(err).Msg("")
 	}
 
-	//db := api.App.DB.Ent
-	//db.Permission.Create().SetName("test")
-	//db.Permission.Create().SetName("test-2")
-	//db.Role.Create().SetName("role")
-	//db.User.Create().AD
-
 	// Migrate
 	err = api.App.DB.MigrateModels()
 	if err != nil {
