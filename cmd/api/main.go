@@ -1,6 +1,10 @@
 package main
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/efectn/library-management/pkg/database/seeds"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/routes"
@@ -8,6 +12,17 @@ import (
 	"github.com/efectn/library-management/pkg/webserver"
 	"github.com/rs/zerolog/log"
 )
+
+// Init the app
+func init() {
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		api.App.Shutdown()
+		os.Exit(1)
+	}()
+}
 
 // Fix:
 // - Prefork not working with zerolog.

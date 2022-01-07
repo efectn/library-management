@@ -12,11 +12,12 @@ import (
 
 type Config struct {
 	App struct {
-		Name       string `toml:"name"`
-		Port       string `toml:"port"`
-		Prefork    bool   `toml:"prefork"`
-		Production bool   `toml:"production"`
-		TLS        struct {
+		Name        string        `toml:"name"`
+		Port        string        `toml:"port"`
+		Prefork     bool          `toml:"prefork"`
+		Production  bool          `toml:"production"`
+		IdleTimeout time.Duration `toml:"idle-timeout"`
+		TLS         struct {
 			Enable       bool
 			HTTP2Support bool   `toml:"http2-support"`
 			CertFile     string `toml:"cert-file"`

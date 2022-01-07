@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/dgrr/http2"
 	"github.com/efectn/library-management/pkg/database"
@@ -45,6 +46,7 @@ func New(configPart *config.Config) *AppSkel {
 					"error":  err.Error(),
 				})
 			},
+			IdleTimeout: configPart.App.IdleTimeout * time.Second,
 		}),
 		DB:     database.Init(),
 		Config: configPart,
@@ -174,4 +176,18 @@ func (app *AppSkel) Run() error {
 	}
 
 	return nil
+}
+
+// Shutdown the webserver
+func (app *AppSkel) Shutdown() {
+	// Shutdown fiber
+	app.Logger.Warn().Msg("Fiber shutting down.")
+	app.Fiber.Shutdown()
+
+	// Shutdown databases
+	app.Logger.Warn().Msg("Databases shutting down.")
+	app.DB.Redis.Close()
+	app.DB.Ent.Close()
+
+	app.Logger.Info().Msgf("%s, was successfully shutted down! \u001b[96mSee you again👋👋\u001b[0m", app.Config.App.Name)
 }

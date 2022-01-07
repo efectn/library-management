@@ -2,6 +2,7 @@
 [app]
 name = "LMS app"
 port = ":8080"
+idle-timeout = 5 # As seconds
 prefork = false
 production = false
 
