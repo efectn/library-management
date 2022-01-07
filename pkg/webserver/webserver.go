@@ -123,6 +123,7 @@ func (app *AppSkel) Run() error {
 		app.Logger.Debug().Msgf("Host: %s", host)
 		app.Logger.Debug().Msgf("Port: %s", port)
 		app.Logger.Debug().Msgf("Prefork: %s", prefork)
+                app.Logger.Debug().Msgf("Handlers: %d", app.Fiber.HandlersCount())
 		app.Logger.Debug().Msgf("Processes: %d", procs)
 		app.Logger.Debug().Msgf("PID: %d", os.Getpid())
 	}
