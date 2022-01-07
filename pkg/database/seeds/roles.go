@@ -1,13 +1,14 @@
 package seeds
 
 import (
-	"github.com/efectn/library-management/pkg/database/models"
-	"github.com/efectn/library-management/pkg/utils"
+	"context"
+	"github.com/efectn/library-management/pkg/database/ent"
+	"github.com/efectn/library-management/pkg/globals/api"
 )
 
 type RoleSeeder struct{}
 
-var roles = []models.Role{
+var roles = []ent.Role{
 	{
 		Name: "User",
 	},
@@ -16,8 +17,19 @@ var roles = []models.Role{
 	},
 }
 
-func (RoleSeeder) Seed() {
-	utils.SeederFunc(&roles, "Roles", func() {
+func (RoleSeeder) Seed() error {
+	bulk := make([]*ent.RoleCreate, len(roles))
+	for i, role := range roles {
+		bulk[i] = api.App.DB.Ent.Role.Create().SetName(role.Name)
+	}
+	_, err := api.App.DB.Ent.Role.CreateBulk(bulk...).Save(context.Background())
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+	/*utils.SeederFunc(&roles, "Roles", func() {
 		utils.Authority{}.AssignPermissions(roles[0].Name, "access-profile")
 		utils.Authority{}.AssignPermissions(roles[1].Name,
 			"access-profile",
@@ -32,9 +44,9 @@ func (RoleSeeder) Seed() {
 			"edit-role",
 			"delete-role",
 		)
-	})
+	})*/
 }
 
-func (RoleSeeder) ReturnModel() interface{} {
-	return &models.Role{}
+func (RoleSeeder) Count() (int, error) {
+	return api.App.DB.Ent.Role.Query().Count(context.Background())
 }

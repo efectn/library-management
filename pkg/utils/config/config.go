@@ -16,6 +16,12 @@ type Config struct {
 		Port       string `toml:"port"`
 		Prefork    bool   `toml:"prefork"`
 		Production bool   `toml:"production"`
+		TLS        struct {
+			Enable       bool
+			HTTP2Support bool   `toml:"http2-support"`
+			CertFile     string `toml:"cert-file"`
+			KeyFile      string `toml:"key-file"`
+		}
 	}
 
 	Logger struct {
@@ -76,7 +82,7 @@ func IsEnabled(key bool) func(c *fiber.Ctx) bool {
 	return func(c *fiber.Ctx) bool { return enabled }
 }
 
-// From https://github.com/gofiber/fiber/blob/master/helpers.go#L305.
+// ParseAddr From https://github.com/gofiber/fiber/blob/master/helpers.go#L305.
 func ParseAddr(raw string) (host, port string) {
 	if i := strings.LastIndex(raw, ":"); i != -1 {
 		return raw[:i], raw[i+1:]

@@ -13,6 +13,7 @@ services:
       - default
     ports: 
       - "8080:8080"
+      - "4433:4433"
     depends_on:
       - redis
       - postgres

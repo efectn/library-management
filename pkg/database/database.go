@@ -1,37 +1,42 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/efectn/library-management/pkg/database/ent"
 	"github.com/gofiber/storage/redis"
 	"github.com/rs/zerolog/log"
-	_ "github.com/rs/zerolog/log"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+
+	"database/sql"
+
+	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 type Database struct {
-	Gorm  *gorm.DB
+	Ent   *ent.Client
 	Redis *redis.Storage
 }
 
 type Seeder interface {
-	Seed()
-	ReturnModel() interface{}
+	Seed() error
+	Count() (int, error)
 }
 
 func Init() *Database {
 	return new(Database)
 }
 
-func (db *Database) SetupGORM(host string, port int, user string, password string, name string) error {
-	conn, err := gorm.Open(postgres.Open(fmt.Sprintf("host=%s port=%d dbname=%s user=%s password=%s sslmode=disable", host, port, user, password, name)), &gorm.Config{})
-
+func (db *Database) SetupEnt(host string, port int, user string, password string, name string) error {
+	conn, err := sql.Open("pgx", fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", user, password, host, port, name))
 	if err != nil {
 		return err
 	}
 
-	db.Gorm = conn
+	drv := entsql.OpenDB(dialect.Postgres, conn)
+	db.Ent = ent.NewClient(ent.Driver(drv))
 
 	return nil
 }
@@ -47,17 +52,28 @@ func (db *Database) SetupRedis(url string, reset bool) error {
 	return nil
 }
 
-func (db *Database) MigrateModels(models ...interface{}) error {
-	return db.Gorm.AutoMigrate(models...)
+func (db *Database) MigrateModels() error {
+	if err := db.Ent.Schema.Create(context.Background()); err != nil {
+		return fmt.Errorf("failed creating schema resources: %v", err.Error())
+	}
+
+	return nil
+
 }
 
 func (db *Database) SeedModels(seeder ...Seeder) {
 	for _, v := range seeder {
-		var count int64 = 0
-		db.Gorm.Model(v.ReturnModel()).Count(&count)
+
+		count, err := v.Count()
+		if err != nil {
+			log.Panic().Err(err).Msg("")
+		}
 
 		if count == 0 {
-			v.Seed()
+			err = v.Seed()
+			if err != nil {
+				log.Panic().Err(err).Msg("")
+			}
 		} else {
 			log.Warn().Msg("Table has seeded already. Skipping!")
 		}

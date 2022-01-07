@@ -1,13 +1,14 @@
 package seeds
 
 import (
-	"github.com/efectn/library-management/pkg/database/models"
-	"github.com/efectn/library-management/pkg/utils"
+	"context"
+	"github.com/efectn/library-management/pkg/database/ent"
+	"github.com/efectn/library-management/pkg/globals/api"
 )
 
 type PermissionSeeder struct{}
 
-var permissions = []models.Permission{
+var permissions = []ent.Role{
 	{
 		Name: "access-profile",
 	},
@@ -43,10 +44,19 @@ var permissions = []models.Permission{
 	},
 }
 
-func (PermissionSeeder) Seed() {
-	utils.SeederFunc(&permissions, "Permissions")
+func (PermissionSeeder) Seed() error {
+	bulk := make([]*ent.PermissionCreate, len(permissions))
+	for i, perm := range permissions {
+		bulk[i] = api.App.DB.Ent.Permission.Create().SetName(perm.Name)
+	}
+	_, err := api.App.DB.Ent.Permission.CreateBulk(bulk...).Save(context.Background())
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (PermissionSeeder) ReturnModel() interface{} {
-	return &models.Permission{}
+func (PermissionSeeder) Count() (int, error) {
+	return api.App.DB.Ent.Permission.Query().Count(context.Background())
 }

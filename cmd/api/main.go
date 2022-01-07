@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/efectn/library-management/pkg/database/models"
 	"github.com/efectn/library-management/pkg/database/seeds"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/routes"
@@ -16,16 +15,19 @@ import (
 // Execute the app
 func Execute() {
 	// Parse Config
-	config, err := config.ParseConfig("api")
+	parseConfig, err := config.ParseConfig("api")
 	if err != nil {
 		log.Panic().Err(err).Msg("")
 	}
 
 	// Init App
-	api.App = webserver.New(config)
+	api.App = webserver.New(parseConfig)
 
 	// Logger
-	api.App.SetupLogger()
+	err = api.App.SetupLogger()
+	if err != nil {
+		api.App.Logger.Panic().Err(err).Msg("")
+	}
 
 	// Database
 	err = api.App.SetupDB()
@@ -33,8 +35,14 @@ func Execute() {
 		api.App.Logger.Panic().Err(err).Msg("")
 	}
 
+	//db := api.App.DB.Ent
+	//db.Permission.Create().SetName("test")
+	//db.Permission.Create().SetName("test-2")
+	//db.Role.Create().SetName("role")
+	//db.User.Create().AD
+
 	// Migrate
-	err = api.App.DB.MigrateModels(&models.Users{}, &models.Role{}, &models.Permission{})
+	err = api.App.DB.MigrateModels()
 	if err != nil {
 		api.App.Logger.Panic().Err(err).Msg("")
 	}

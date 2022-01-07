@@ -1,16 +1,17 @@
 package controllers
 
 import (
+	"context"
 	"errors"
 	"time"
 
-	"github.com/efectn/library-management/pkg/database/models"
+	"github.com/efectn/library-management/pkg/database/ent"
+	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type AuthController struct{}
@@ -46,19 +47,19 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		return utils.ReturnErrorMessage(c, err)
 	}
 
-	res := api.App.DB.Gorm.Create(&models.Users{Email: u.Email,
-		Password: string(password),
-		Name:     u.Name,
-		Phone:    u.Phone,
-		City:     u.City,
-		State:    u.State,
-		Country:  u.Country,
-		ZipCode:  u.ZipCode,
-		Address:  u.Adress,
-	})
+	_, err = api.App.DB.Ent.User.Create().SetEmail(u.Email).
+		SetPassword(string(password)).
+		SetName(u.Name).
+		SetPhone(u.Phone).
+		SetCity(u.City).
+		SetState(u.State).
+		SetCountry(u.Country).
+		SetZipCode(u.ZipCode).
+		SetAddress(u.Adress).
+		Save(context.Background())
 
-	if res.Error != nil {
-		return utils.ReturnErrorMessage(c, res.Error)
+	if err != nil {
+		return utils.ReturnErrorMessage(c, err)
 	}
 
 	return c.JSON(fiber.Map{
@@ -68,7 +69,6 @@ func (AuthController) Register(c *fiber.Ctx) error {
 }
 
 func (AuthController) Login(c *fiber.Ctx) error {
-	var user models.Users
 	u := new(LoginRequest)
 	utils.ParseBody(c, u)
 
@@ -78,9 +78,9 @@ func (AuthController) Login(c *fiber.Ctx) error {
 	}
 
 	// Check exists
-	res := api.App.DB.Gorm.Where("email = ?", u.Email).First(&user)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+	user, err := api.App.DB.Ent.User.Query().Where(user.EmailEQ(u.Email)).First(context.Background())
+	if err != nil {
+		if ent.IsNotFound(err) {
 			return utils.ReturnErrorMessage(c, errors.New("user not found"), fiber.StatusNotFound)
 		}
 	}

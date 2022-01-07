@@ -1,98 +1,54 @@
-// Modified version of https://github.com/harranali/authority. Special thanks to @harranali.
+// Package utils: Modified version of https://github.com/harranali/authority. Special thanks to @harranali.
 // TODO: Add tests.
 package utils
 
 import (
-	"errors"
+	"context"
 
-	"github.com/efectn/library-management/pkg/database/models"
+	"github.com/efectn/library-management/pkg/database/ent"
+	"github.com/efectn/library-management/pkg/database/ent/permission"
+	"github.com/efectn/library-management/pkg/database/ent/role"
+	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
-	"gorm.io/gorm"
 )
 
 // Authority helps deal with permissions
 type Authority struct{}
 
-var (
-	ErrPermissionInUse     = errors.New("cannot delete assigned permission")
-	ErrPermissionNotFound  = errors.New("permission not found")
-	ErrRoleAlreadyAssigned = errors.New("this role is already assigned to the user")
-	ErrRoleInUse           = errors.New("cannot delete assigned role")
-	ErrRoleNotFound        = errors.New("role not found")
-)
-
 // CreateRole stores a role in the databaseADV
 // it accepts the role name. it returns an error
 // in case of any
-func (Authority) CreateRole(roleName string) (models.Role, error) {
-	var dbRole models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&dbRole)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			// create
-			api.App.DB.Gorm.Create(&models.Role{Name: roleName}).First(&dbRole)
-			return dbRole, nil
-		}
-	}
-
-	return dbRole, res.Error
+func (Authority) CreateRole(name string) (*ent.Role, error) {
+	return api.App.DB.Ent.Role.Create().SetName(name).Save(context.Background())
 }
 
 // CreatePermission stores a permission in the database
 // it accepts the permission name. it returns an error
 // in case of any
-func (Authority) CreatePermission(permName string) (models.Permission, error) {
-	var dbPerm models.Permission
-	res := api.App.DB.Gorm.Where("name = ?", permName).First(&dbPerm)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			// create
-			api.App.DB.Gorm.Create(&models.Permission{Name: permName}).First(&dbPerm)
-			return dbPerm, nil
-		}
-	}
-
-	return dbPerm, res.Error
+func (Authority) CreatePermission(name string) (*ent.Permission, error) {
+	return api.App.DB.Ent.Permission.Create().SetName(name).Save(context.Background())
 }
 
 // DeleteRole deletes a given role
 // if the role is assigned to a user it returns an error
-func (Authority) DeleteRole(roleName string) error {
-	// find the role
-	var role models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrRoleNotFound
-		}
-
+func (Authority) DeleteRole(name string) error {
+	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(name)).First(context.Background())
+	if err != nil {
+		return err
 	}
 
-	// delete the role
-	api.App.DB.Gorm.Where("name = ?", roleName).Select("Users").Delete(models.Role{})
-
-	return nil
+	return api.App.DB.Ent.Role.DeleteOne(role).Exec(context.Background())
 }
 
 // DeletePermission deletes a given permission
 // if the permission is assigned to a role it returns an error
-func (Authority) DeletePermission(permName string) error {
-	// find the permission
-	var perm models.Permission
-	res := api.App.DB.Gorm.Where("name = ?", permName).First(&perm)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrPermissionNotFound
-		}
-
+func (Authority) DeletePermission(name string) error {
+	perm, err := api.App.DB.Ent.Permission.Query().Where(permission.NameEQ(name)).First(context.Background())
+	if err != nil {
+		return err
 	}
 
-	// delete the permission
-	if err := api.App.DB.Gorm.Delete(&perm); err.Error != nil {
-		return err.Error
-	}
-
-	return nil
+	return api.App.DB.Ent.Permission.DeleteOne(perm).Exec(context.Background())
 }
 
 // AssignPermissions assigns a group of permissions to a given role
@@ -103,62 +59,49 @@ func (Authority) DeletePermission(permName string) error {
 // and error is returned
 // in case of success nothing is returned
 func (Authority) AssignPermissions(roleName string, permNames ...string) error {
-	// get the role id
-	var role models.Role
-	rRes := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if rRes.Error != nil {
-		if errors.Is(rRes.Error, gorm.ErrRecordNotFound) {
-			return ErrRoleNotFound
-		}
-
+	// get the role
+	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
+	if err != nil {
+		return err
 	}
 
-	var perms []models.Permission
-	// get the permissions ids
-	for _, permName := range permNames {
-		var perm models.Permission
-		pRes := api.App.DB.Gorm.Where("name = ?", permName).First(&perm)
-		if pRes.Error != nil {
-			if errors.Is(pRes.Error, gorm.ErrRecordNotFound) {
-				return ErrPermissionNotFound
-			}
-
-		}
-
-		perms = append(perms, perm)
+	// get the permission
+	perms, err := api.App.DB.Ent.Permission.Query().Where(permission.NameIn(permNames...)).All(context.Background())
+	if err != nil {
+		return err
 	}
 
-	api.App.DB.Gorm.Model(&role).Association("Permissions").Append(&perms)
+	// assign permissions
+	err = role.Update().AddPermissions(perms...).Exec(context.Background())
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // AssignRole assigns a given role to a user
 // the first parameter is the user id, the second parameter is the role name
-// if the role name doesn't have a matching record in the data base an error is returned
+// if the role name doesn't have a matching record in the database an error is returned
 // if the user have already a role assigned to him an error is returned
 func (Authority) AssignRole(userID uint, roleName string) error {
+	// get the user
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	if err != nil {
+		return err
+	}
+
 	// make sure the role exist
-	var role models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrRoleNotFound
-		}
-	}
-
-	// check if the role is already assigned
-	var user models.Users
-	if err := api.App.DB.Gorm.First(&user, userID); err.Error != nil {
-		return err.Error
-	}
-
-	if err := api.App.DB.Gorm.Model(&user).Association("Roles").Find(&role); err != nil {
-		return ErrRoleAlreadyAssigned
+	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
+	if err != nil {
+		return err
 	}
 
 	// assign the role
-	api.App.DB.Gorm.Model(&user).Association("Roles").Append(&role)
+	err = user.Update().AddRoles(role).Exec(context.Background())
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -168,34 +111,13 @@ func (Authority) AssignRole(userID uint, roleName string) error {
 // the role as the second parameter
 // it returns an error if the role is not present in database
 func (Authority) CheckRole(userID uint, roleName string) (bool, error) {
-	// find the role
-	var role models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return false, ErrRoleNotFound
-		}
-
+	// get the user
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	if err != nil {
+		return false, err
 	}
 
-	// check if the role is already assigned
-	var user models.Users
-	if err := api.App.DB.Gorm.First(&user, userID); err.Error != nil {
-		return false, err.Error
-	}
-
-	var roles []models.Role
-	if err := api.App.DB.Gorm.Model(&user).Association("Roles").Find(&roles); err != nil {
-		return false, ErrRoleAlreadyAssigned
-	}
-
-	for _, v := range roles {
-		if v.ID == role.ID {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return user.QueryRoles().Where(role.NameEQ(roleName)).Exist(context.Background())
 }
 
 // CheckPermission checks if a permission is assigned to the role that's assigned to the user.
@@ -203,35 +125,13 @@ func (Authority) CheckRole(userID uint, roleName string) (bool, error) {
 // the permission as the second parameter
 // it returns an error if the permission is not present in the database
 func (Authority) CheckPermission(userID uint, permName string) (bool, error) {
-	// the user role
-	var user models.Users
-	if err := api.App.DB.Gorm.First(&user, userID); err.Error != nil {
-		return false, err.Error
+	// get the user
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).WithRoles().First(context.Background())
+	if err != nil {
+		return false, err
 	}
 
-	// the permission
-	var perm models.Permission
-	if err := api.App.DB.Gorm.Where("name = ?", permName).Find(&perm); err.Error != nil {
-		return false, err.Error
-	}
-
-	// Get relations
-	if err := api.App.DB.Gorm.Preload("Roles.Permissions").Find(&user); err.Error != nil {
-		return false, err.Error
-	}
-	var perms []models.Permission
-	for _, v := range user.Roles {
-		perms = append(perms, v.Permissions...)
-	}
-
-	// Check exists
-	for _, v := range perms {
-		if v.Name == perm.Name {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return user.QueryRoles().QueryPermissions().Where(permission.NameEQ(permName)).Exist(context.Background())
 }
 
 // CheckRolePermission checks if a role has the permission assigned
@@ -240,165 +140,80 @@ func (Authority) CheckPermission(userID uint, permName string) (bool, error) {
 // it returns an error if the role is not present in database
 // it returns an error if the permission is not present in database
 func (Authority) CheckRolePermission(roleName string, permName string) (bool, error) {
-	// find the role
-	var role models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return false, ErrRoleNotFound
-		}
-
-	}
-
-	// find the permission
-	var perm models.Permission
-	res = api.App.DB.Gorm.Where("name = ?", permName).First(&perm)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return false, ErrPermissionNotFound
-		}
-
-	}
-
-	// find the rolePermission
-	var perms []models.Permission
-	err := api.App.DB.Gorm.Model(&role).Association("Permissions").Find(&perms)
+	// get the user
+	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, nil
-		}
-
+		return false, err
 	}
 
-	for _, v := range perms {
-		if v.ID == perm.ID {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return role.QueryPermissions().Where(permission.NameEQ(permName)).Exist(context.Background())
 }
 
 // RevokeRole revokes a user's role
-// it returns a error in case of any
+// it returns an error in case of any
 func (Authority) RevokeRole(userID uint, roleName string) error {
-	// find the role
-	var role models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrRoleNotFound
-		}
-
+	// get the user
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	if err != nil {
+		return err
 	}
 
-	// revoke the role
-	var user models.Users
-	if err := api.App.DB.Gorm.First(&user, userID); err.Error != nil {
-		return err.Error
+	// make sure the role exist
+	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
+	if err != nil {
+		return err
 	}
 
-	api.App.DB.Gorm.Model(&user).Association("Roles").Delete(&role)
+	// assign the role
+	err = user.Update().RemoveRoles(role).Exec(context.Background())
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-// RevokePermission revokes a permission from the user's assigned role
+// RevokePermission revokes a permission from the role
 // it returns an error in case of any
-func (Authority) RevokePermission(userID uint, permName string) error {
-	// revoke the permission from all roles of the user
-	// find the user roles
-	var user models.Users
-	var roles []models.Role
-	if err := api.App.DB.Gorm.First(&user, userID); err.Error != nil {
-		return err.Error
+func (Authority) RevokePermission(roleName string, permNames ...string) error {
+	// get the role
+	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
+	if err != nil {
+		return err
 	}
 
-	if err := api.App.DB.Gorm.Model(&user).Association("Roles").Find(&roles); err != nil {
-		return ErrRoleAlreadyAssigned
+	// get the permission
+	perms, err := api.App.DB.Ent.Permission.Query().Where(permission.NameIn(permNames...)).All(context.Background())
+	if err != nil {
+		return err
 	}
 
-	// find the permission
-	var perm models.Permission
-	res := api.App.DB.Gorm.Where("name = ?", permName).First(&perm)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrPermissionNotFound
-		}
-
+	// assign permissions
+	err = role.Update().RemovePermissions(perms...).Exec(context.Background())
+	if err != nil {
+		return err
 	}
-
-	api.App.DB.Gorm.Model(&roles).Association("Permissions").Delete(&perm)
-
-	return nil
-}
-
-// RevokeRolePermission revokes a permission from a given role
-// it returns an error in case of any
-func (Authority) RevokeRolePermission(roleName string, permName string) error {
-	// find the role
-	var role models.Role
-	res := api.App.DB.Gorm.Where("name = ?", roleName).First(&role)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrRoleNotFound
-		}
-
-	}
-
-	// find the permission
-	var perm models.Permission
-	res = api.App.DB.Gorm.Where("name = ?", permName).First(&perm)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return ErrPermissionNotFound
-		}
-
-	}
-
-	// revoke the permission
-	api.App.DB.Gorm.Model(&role).Association("Permissions").Delete(&perm)
 
 	return nil
 }
 
 // GetRoles returns all stored roles
-func (Authority) GetRoles() ([]string, error) {
-	var result []string
-	var roles []models.Role
-	api.App.DB.Gorm.Find(&roles)
-
-	for _, role := range roles {
-		result = append(result, role.Name)
-	}
-
-	return result, nil
+func (Authority) GetRoles() ([]*ent.Role, error) {
+	return api.App.DB.Ent.Role.Query().All(context.Background())
 }
 
 // GetUserRoles returns all user assigned roles
-func (Authority) GetUserRoles(userID uint) ([]models.Role, error) {
-	var user models.Users
-	if err := api.App.DB.Gorm.First(&user, userID); err.Error != nil {
-		return []models.Role{}, err.Error
+func (Authority) GetUserRoles(userID uint) ([]*ent.Role, error) {
+	// get the user
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	if err != nil {
+		return []*ent.Role{}, err
 	}
 
-	var roles []models.Role
-	if err := api.App.DB.Gorm.Model(&user).Association("Roles").Find(&roles); err != nil {
-		return []models.Role{}, err
-	}
-
-	return roles, nil
+	return user.QueryRoles().All(context.Background())
 }
 
 // GetPermissions returns all stored permissions
-func (Authority) GetPermissions() ([]string, error) {
-	var result []string
-	var perms []models.Permission
-	api.App.DB.Gorm.Find(&perms)
-
-	for _, perm := range perms {
-		result = append(result, perm.Name)
-	}
-
-	return result, nil
+func (Authority) GetPermissions() ([]*ent.Permission, error) {
+	return api.App.DB.Ent.Permission.Query().All(context.Background())
 }

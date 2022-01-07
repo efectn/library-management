@@ -12,6 +12,9 @@ var authController controllers.AuthController
 
 func RegisterAPIRoutes(app fiber.Router) {
 	// Auth Routes
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.SendString("test")
+	})
 	app.Post("/register", authController.Register)
 	app.Post("/login", authController.Login)
 
