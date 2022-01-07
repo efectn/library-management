@@ -13,7 +13,7 @@ func New(name string) fiber.Handler {
 		user := c.Locals("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
 
-		id := uint(claims["fields"].(map[string]interface{})["ID"].(float64))
+		id := int(claims["fields"].(map[string]interface{})["ID"].(float64))
 		perm, err := auth.CheckPermission(id, name)
 		if err != nil {
 			return c.JSON(fiber.Map{

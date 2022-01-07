@@ -84,9 +84,9 @@ func (Authority) AssignPermissions(roleName string, permNames ...string) error {
 // the first parameter is the user id, the second parameter is the role name
 // if the role name doesn't have a matching record in the database an error is returned
 // if the user have already a role assigned to him an error is returned
-func (Authority) AssignRole(userID uint, roleName string) error {
+func (Authority) AssignRole(userID int, roleName string) error {
 	// get the user
-	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
 	if err != nil {
 		return err
 	}
@@ -110,9 +110,9 @@ func (Authority) AssignRole(userID uint, roleName string) error {
 // it accepts the user id as the first parameter
 // the role as the second parameter
 // it returns an error if the role is not present in database
-func (Authority) CheckRole(userID uint, roleName string) (bool, error) {
+func (Authority) CheckRole(userID int, roleName string) (bool, error) {
 	// get the user
-	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
 	if err != nil {
 		return false, err
 	}
@@ -124,9 +124,9 @@ func (Authority) CheckRole(userID uint, roleName string) (bool, error) {
 // it accepts the user id as the first parameter
 // the permission as the second parameter
 // it returns an error if the permission is not present in the database
-func (Authority) CheckPermission(userID uint, permName string) (bool, error) {
+func (Authority) CheckPermission(userID int, permName string) (bool, error) {
 	// get the user
-	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).WithRoles().First(context.Background())
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).WithRoles().First(context.Background())
 	if err != nil {
 		return false, err
 	}
@@ -151,9 +151,9 @@ func (Authority) CheckRolePermission(roleName string, permName string) (bool, er
 
 // RevokeRole revokes a user's role
 // it returns an error in case of any
-func (Authority) RevokeRole(userID uint, roleName string) error {
+func (Authority) RevokeRole(userID int, roleName string) error {
 	// get the user
-	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
 	if err != nil {
 		return err
 	}
@@ -203,9 +203,9 @@ func (Authority) GetRoles() ([]*ent.Role, error) {
 }
 
 // GetUserRoles returns all user assigned roles
-func (Authority) GetUserRoles(userID uint) ([]*ent.Role, error) {
+func (Authority) GetUserRoles(userID int) ([]*ent.Role, error) {
 	// get the user
-	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(int(userID))).First(context.Background())
+	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
 	if err != nil {
 		return []*ent.Role{}, err
 	}

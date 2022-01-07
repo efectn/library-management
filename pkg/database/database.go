@@ -74,6 +74,8 @@ func (db *Database) SeedModels(seeder ...Seeder) {
 			if err != nil {
 				log.Panic().Err(err).Msg("")
 			}
+
+			log.Debug().Msg("Table has seeded successfully.")
 		} else {
 			log.Warn().Msg("Table has seeded already. Skipping!")
 		}
