@@ -15,14 +15,14 @@ type UserSeeder struct{}
 var users = []ent.User{
 	{
 		Email:    "john@test.net",
-		Password: "12345",
+		Password: "12345678",
 		Name:     "John Doe",
 		Phone:    "+905000000000",
 		ZipCode:  11111,
 	},
 	{
 		Email:    "jane@test.net",
-		Password: "12345",
+		Password: "12345678",
 		Name:     "Jane Doe",
 		Phone:    "+902000000000",
 		ZipCode:  22222,

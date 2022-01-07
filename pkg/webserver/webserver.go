@@ -34,6 +34,17 @@ func New(configPart *config.Config) *AppSkel {
 			ServerHeader:          configPart.App.Name,
 			Prefork:               configPart.App.Prefork,
 			DisableStartupMessage: true,
+			ErrorHandler: func(c *fiber.Ctx, err error) error {
+				code := fiber.StatusInternalServerError
+				if e, ok := err.(*fiber.Error); ok {
+					code = e.Code
+				}
+				c.Set(fiber.HeaderContentType, fiber.MIMETextPlainCharsetUTF8)
+				return c.Status(code).JSON(fiber.Map{
+					"status": false,
+					"error":  err.Error(),
+				})
+			},
 		}),
 		DB:     database.Init(),
 		Config: configPart,
@@ -123,7 +134,7 @@ func (app *AppSkel) Run() error {
 		app.Logger.Debug().Msgf("Host: %s", host)
 		app.Logger.Debug().Msgf("Port: %s", port)
 		app.Logger.Debug().Msgf("Prefork: %s", prefork)
-                app.Logger.Debug().Msgf("Handlers: %d", app.Fiber.HandlersCount())
+		app.Logger.Debug().Msgf("Handlers: %d", app.Fiber.HandlersCount())
 		app.Logger.Debug().Msgf("Processes: %d", procs)
 		app.Logger.Debug().Msgf("PID: %d", os.Getpid())
 	}

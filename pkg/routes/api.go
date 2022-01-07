@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/efectn/library-management/pkg/controllers"
 	"github.com/efectn/library-management/pkg/globals/api"
+	"github.com/efectn/library-management/pkg/middlewares/permission"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
 )
@@ -26,9 +27,9 @@ func RegisterAPIRoutes(app fiber.Router) {
 	// Restricted Routes
 	users := app.Group("/users")
 
-	users.Get("/", userController.Index)
-	users.Post("/", userController.Store)
-	users.Get("/:id", userController.Show)
-	users.Patch("/:id", userController.Update)
-	users.Delete("/:id", userController.Destroy)
+	users.Get("/", permission.New("list-users"), userController.Index)
+	users.Post("/", permission.New("create-user"), userController.Store)
+	users.Get("/:id", permission.New("show-users"), userController.Show)
+	users.Patch("/:id", permission.New("edit-user"), userController.Update)
+	users.Delete("/:id", permission.New("delete-user"), userController.Destroy)
 }
