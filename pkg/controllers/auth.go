@@ -9,6 +9,7 @@ import (
 	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils"
+	"github.com/efectn/library-management/pkg/utils/convert"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -48,7 +49,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 	}
 
 	_, err = api.App.DB.Ent.User.Create().SetEmail(u.Email).
-		SetPassword(string(password)).
+		SetPassword(convert.UnsafeString(password)).
 		SetName(u.Name).
 		SetPhone(u.Phone).
 		SetCity(u.City).
