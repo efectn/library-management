@@ -14,6 +14,7 @@ var authController controllers.AuthController
 func RegisterAPIRoutes(app fiber.Router) {
 	// Auth Routes
 	app.Get("/", func(ctx *fiber.Ctx) error {
+		panic("fdfd")
 		return ctx.SendString("test")
 	})
 	app.Post("/register", authController.Register)
@@ -21,7 +22,8 @@ func RegisterAPIRoutes(app fiber.Router) {
 
 	// JWT Middleware
 	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: []byte(api.App.Config.Middleware.Jwt.Key),
+		SigningKey:   []byte(api.App.Config.Middleware.Jwt.Key),
+		ErrorHandler: api.App.Fiber.ErrorHandler,
 	}))
 
 	// Restricted Routes

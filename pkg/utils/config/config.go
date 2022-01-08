@@ -23,6 +23,9 @@ type Config struct {
 			CertFile     string `toml:"cert-file"`
 			KeyFile      string `toml:"key-file"`
 		}
+		Hash struct {
+			BcryptCost int `toml:"bcrypt-cost"`
+		}
 	}
 
 	Logger struct {

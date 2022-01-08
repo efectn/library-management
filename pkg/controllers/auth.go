@@ -43,7 +43,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(validate)
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
+	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
 	if err != nil {
 		return utils.ReturnErrorMessage(c, err)
 	}

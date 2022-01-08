@@ -32,7 +32,7 @@ var users = []ent.User{
 func (UserSeeder) Seed() error {
 	bulk := make([]*ent.UserCreate, len(users))
 	for i, user := range users {
-		password, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+		password, err := bcrypt.GenerateFromPassword([]byte(user.Password), api.App.Config.App.Hash.BcryptCost)
 		if err != nil {
 			return err
 		}
