@@ -58,8 +58,8 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
-github.com/dgrr/http2 v0.2.13 h1:4egl4zN1uJgIu+24jth/GMfwmsvgT7Fr3D69IC1yHLw=
-github.com/dgrr/http2 v0.2.13/go.mod h1:OrmrVjQp6qa+E3VEiNB+fqpfl+8D9k1ZbBfK4RKU8D0=
+github.com/dgrr/http2 v0.3.2 h1:JlIpp46mHBqbyFBNjd4F6vArmC0ioZVuVNACqYbZXRw=
+github.com/dgrr/http2 v0.3.2/go.mod h1:OrmrVjQp6qa+E3VEiNB+fqpfl+8D9k1ZbBfK4RKU8D0=
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f h1:lO4WD4F/rVNCu3HqELle0jiPLLBs70cWOduZpkS1E78=
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
