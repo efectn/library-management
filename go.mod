@@ -12,7 +12,7 @@ require (
 require (
 	entgo.io/ent v0.9.1
 	github.com/BurntSushi/toml v1.0.0
-	github.com/dgrr/http2 v0.2.13
+	github.com/dgrr/http2 v0.3.2
 	github.com/jackc/pgx/v4 v4.14.1
 )
 
