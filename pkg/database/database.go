@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/schema"
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
@@ -53,7 +54,7 @@ func (db *Database) SetupRedis(url string, reset bool) error {
 }
 
 func (db *Database) MigrateModels() error {
-	if err := db.Ent.Schema.Create(context.Background()); err != nil {
+	if err := db.Ent.Schema.Create(context.Background(), schema.WithAtlas(true)); err != nil {
 		return fmt.Errorf("failed creating schema resources: %v", err.Error())
 	}
 
