@@ -10,6 +10,7 @@ import (
 
 	"github.com/dgrr/http2"
 	"github.com/efectn/library-management/pkg/database"
+	"github.com/efectn/library-management/pkg/globals"
 	"github.com/efectn/library-management/pkg/utils/config"
 	"github.com/efectn/library-management/pkg/utils/convert"
 	"github.com/gofiber/fiber/v2"
@@ -72,7 +73,11 @@ func (app *AppSkel) SetupDB() error {
 		return err
 	}
 
-	err = app.DB.SetupEnt(app.Config.DB.Postgres.Host, app.Config.DB.Postgres.Port, app.Config.DB.Postgres.User, app.Config.DB.Postgres.Password, app.Config.DB.Postgres.Name)
+	err = app.DB.SetupEnt(app.Config.DB.Postgres.Host,
+		app.Config.DB.Postgres.Port,
+		app.Config.DB.Postgres.User,
+		app.Config.DB.Postgres.Password,
+		app.Config.DB.Postgres.Name)
 	if err != nil {
 		return err
 	}
@@ -133,6 +138,7 @@ func (app *AppSkel) Run() error {
 			prefork = "Disabled"
 		}
 
+		app.Logger.Debug().Msgf("Version: %s", globals.VERSION)
 		app.Logger.Debug().Msgf("Host: %s", host)
 		app.Logger.Debug().Msgf("Port: %s", port)
 		app.Logger.Debug().Msgf("Prefork: %s", prefork)

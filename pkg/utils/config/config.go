@@ -10,66 +10,76 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type Config struct {
-	App struct {
-		Name        string        `toml:"name"`
-		Port        string        `toml:"port"`
-		Prefork     bool          `toml:"prefork"`
-		Production  bool          `toml:"production"`
-		IdleTimeout time.Duration `toml:"idle-timeout"`
-		TLS         struct {
-			Enable       bool
-			HTTP2Support bool   `toml:"http2-support"`
-			CertFile     string `toml:"cert-file"`
-			KeyFile      string `toml:"key-file"`
-		}
-		Hash struct {
-			BcryptCost int `toml:"bcrypt-cost"`
-		}
+type app = struct {
+	Name        string        `toml:"name"`
+	Port        string        `toml:"port"`
+	Prefork     bool          `toml:"prefork"`
+	Production  bool          `toml:"production"`
+	IdleTimeout time.Duration `toml:"idle-timeout"`
+	TLS         struct {
+		Enable       bool
+		HTTP2Support bool   `toml:"http2-support"`
+		CertFile     string `toml:"cert-file"`
+		KeyFile      string `toml:"key-file"`
 	}
-
-	Logger struct {
-		TimeFormat string        `toml:"time-format"`
-		Level      zerolog.Level `toml:"level"`
-		Prettier   bool          `toml:"prettier"`
-	}
-
-	DB struct {
-		Redis struct {
-			Url   string `toml:"url"`
-			Reset bool   `toml:"reset"`
-		}
-
-		Postgres struct {
-			Host     string `toml:"host"`
-			Port     int    `toml:"port"`
-			Name     string `toml:"name"`
-			User     string `toml:"user"`
-			Password string `toml:"password"`
-		}
-	}
-
-	Middleware struct {
-		Jwt struct {
-			Key   string
-			Hours time.Duration
-		}
-
-		Compress struct {
-			Enable bool
-			Level  compress.Level
-		}
-
-		Recover struct {
-			Enable bool
-		}
+	Hash struct {
+		BcryptCost int `toml:"bcrypt-cost"`
 	}
 }
 
-func ParseConfig(filename string) (*Config, error) {
-	var contents *Config
+type logger = struct {
+	TimeFormat string        `toml:"time-format"`
+	Level      zerolog.Level `toml:"level"`
+	Prettier   bool          `toml:"prettier"`
+}
 
-	_, err := toml.DecodeFile("./config/"+filename+".toml", &contents)
+type db = struct {
+	Redis struct {
+		Url   string `toml:"url"`
+		Reset bool   `toml:"reset"`
+	}
+
+	Postgres struct {
+		Host     string `toml:"host"`
+		Port     int    `toml:"port"`
+		Name     string `toml:"name"`
+		User     string `toml:"user"`
+		Password string `toml:"password"`
+	}
+}
+
+type middleware = struct {
+	Jwt struct {
+		Key   string `toml:"secret"`
+		Hours time.Duration
+	}
+
+	Compress struct {
+		Enable bool
+		Level  compress.Level
+	}
+
+	Recover struct {
+		Enable bool
+	}
+}
+
+type Config struct {
+	App        app
+	Logger     logger
+	DB         db
+	Middleware middleware
+}
+
+func ParseConfig(filename string, debug ...bool) (*Config, error) {
+	var contents *Config
+	var err error
+
+	if len(debug) > 0 {
+		_, err = toml.DecodeFile(filename, &contents)
+	} else {
+		_, err = toml.DecodeFile("./config/"+filename+".toml", &contents)
+	}
 	if err != nil {
 		return &Config{}, err
 	}
@@ -78,12 +88,11 @@ func ParseConfig(filename string) (*Config, error) {
 }
 
 func IsEnabled(key bool) func(c *fiber.Ctx) bool {
-	enabled := true
 	if key {
-		enabled = false
+		return nil
 	}
 
-	return func(c *fiber.Ctx) bool { return enabled }
+	return func(c *fiber.Ctx) bool { return true }
 }
 
 // ParseAddr From https://github.com/gofiber/fiber/blob/master/helpers.go#L305.
