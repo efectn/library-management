@@ -14,6 +14,7 @@ require (
 	github.com/BurntSushi/toml v1.0.0
 	github.com/dgrr/http2 v0.3.3
 	github.com/jackc/pgx/v4 v4.14.1
+	github.com/valyala/fasthttp v1.32.0
 )
 
 require (
@@ -37,10 +38,10 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.9.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lib/pq v1.10.4 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.32.0 // indirect
 	github.com/valyala/fastrand v1.1.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/zclconf/go-cty v1.10.0 // indirect

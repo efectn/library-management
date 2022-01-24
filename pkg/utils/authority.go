@@ -1,15 +1,23 @@
 // Package utils: Modified version of https://github.com/harranali/authority. Special thanks to @harranali.
-// TODO: Add tests.
 package utils
 
 import (
 	"context"
+	"errors"
 
 	"github.com/efectn/library-management/pkg/database/ent"
 	"github.com/efectn/library-management/pkg/database/ent/permission"
 	"github.com/efectn/library-management/pkg/database/ent/role"
 	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
+)
+
+var (
+	ErrRoleCreatedAlready = errors.New("authority: the role has created already")
+	ErrPermCreatedAlready = errors.New("authority: the permission has created already")
+	ErrRoleNotFound       = errors.New("authority: the role not found")
+	ErrUserNotFound       = errors.New("authority: the user not found")
+	ErrPermNotFound       = errors.New("authority: the permission(s) not found")
 )
 
 // Authority helps deal with permissions
@@ -19,14 +27,24 @@ type Authority struct{}
 // it accepts the role name. it returns an error
 // in case of any
 func (Authority) CreateRole(name string) (*ent.Role, error) {
-	return api.App.DB.Ent.Role.Create().SetName(name).Save(context.Background())
+	role, err := api.App.DB.Ent.Role.Create().SetName(name).Save(context.Background())
+	if ent.IsConstraintError(err) {
+		return nil, ErrRoleCreatedAlready
+	}
+
+	return role, err
 }
 
 // CreatePermission stores a permission in the database
 // it accepts the permission name. it returns an error
 // in case of any
 func (Authority) CreatePermission(name string) (*ent.Permission, error) {
-	return api.App.DB.Ent.Permission.Create().SetName(name).Save(context.Background())
+	perm, err := api.App.DB.Ent.Permission.Create().SetName(name).Save(context.Background())
+	if ent.IsConstraintError(err) {
+		return nil, ErrPermCreatedAlready
+	}
+
+	return perm, err
 }
 
 // DeleteRole deletes a given role
@@ -34,6 +52,9 @@ func (Authority) CreatePermission(name string) (*ent.Permission, error) {
 func (Authority) DeleteRole(name string) error {
 	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(name)).First(context.Background())
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return ErrRoleNotFound
+		}
 		return err
 	}
 
@@ -45,6 +66,9 @@ func (Authority) DeleteRole(name string) error {
 func (Authority) DeletePermission(name string) error {
 	perm, err := api.App.DB.Ent.Permission.Query().Where(permission.NameEQ(name)).First(context.Background())
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return ErrPermNotFound
+		}
 		return err
 	}
 
@@ -61,13 +85,17 @@ func (Authority) DeletePermission(name string) error {
 func (Authority) AssignPermissions(roleName string, permNames ...string) error {
 	// get the role
 	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrRoleNotFound
+	} else if err != nil {
 		return err
 	}
 
 	// get the permission
 	perms, err := api.App.DB.Ent.Permission.Query().Where(permission.NameIn(permNames...)).All(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrPermNotFound
+	} else if err != nil {
 		return err
 	}
 
@@ -87,13 +115,17 @@ func (Authority) AssignPermissions(roleName string, permNames ...string) error {
 func (Authority) AssignRole(userID int, roleName string) error {
 	// get the user
 	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrUserNotFound
+	} else if err != nil {
 		return err
 	}
 
 	// make sure the role exist
 	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrRoleNotFound
+	} else if err != nil {
 		return err
 	}
 
@@ -113,7 +145,9 @@ func (Authority) AssignRole(userID int, roleName string) error {
 func (Authority) CheckRole(userID int, roleName string) (bool, error) {
 	// get the user
 	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return false, ErrUserNotFound
+	} else if err != nil {
 		return false, err
 	}
 
@@ -127,7 +161,9 @@ func (Authority) CheckRole(userID int, roleName string) (bool, error) {
 func (Authority) CheckPermission(userID int, permName string) (bool, error) {
 	// get the user
 	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).WithRoles().First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return false, ErrUserNotFound
+	} else if err != nil {
 		return false, err
 	}
 
@@ -142,7 +178,9 @@ func (Authority) CheckPermission(userID int, permName string) (bool, error) {
 func (Authority) CheckRolePermission(roleName string, permName string) (bool, error) {
 	// get the user
 	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return false, ErrRoleNotFound
+	} else if err != nil {
 		return false, err
 	}
 
@@ -154,13 +192,17 @@ func (Authority) CheckRolePermission(roleName string, permName string) (bool, er
 func (Authority) RevokeRole(userID int, roleName string) error {
 	// get the user
 	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrUserNotFound
+	} else if err != nil {
 		return err
 	}
 
 	// make sure the role exist
 	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrRoleNotFound
+	} else if err != nil {
 		return err
 	}
 
@@ -178,13 +220,17 @@ func (Authority) RevokeRole(userID int, roleName string) error {
 func (Authority) RevokePermission(roleName string, permNames ...string) error {
 	// get the role
 	role, err := api.App.DB.Ent.Role.Query().Where(role.NameEQ(roleName)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrRoleNotFound
+	} else if err != nil {
 		return err
 	}
 
 	// get the permission
 	perms, err := api.App.DB.Ent.Permission.Query().Where(permission.NameIn(permNames...)).All(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return ErrPermNotFound
+	} else if err != nil {
 		return err
 	}
 
@@ -206,7 +252,9 @@ func (Authority) GetRoles() ([]*ent.Role, error) {
 func (Authority) GetUserRoles(userID int) ([]*ent.Role, error) {
 	// get the user
 	user, err := api.App.DB.Ent.User.Query().Where(user.IDEQ(userID)).First(context.Background())
-	if err != nil {
+	if ent.IsNotFound(err) {
+		return []*ent.Role{}, ErrUserNotFound
+	} else if err != nil {
 		return []*ent.Role{}, err
 	}
 
