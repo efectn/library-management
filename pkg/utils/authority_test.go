@@ -14,6 +14,7 @@ import (
 )
 
 var authority = Authority{}
+var connString = "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable"
 
 func init() {
 	api.App = new(webserver.AppSkel)
@@ -21,7 +22,7 @@ func init() {
 }
 
 func Test_CreateRole(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeleteRole("test")
 
@@ -35,7 +36,7 @@ func Test_CreateRole(t *testing.T) {
 }
 
 func Test_CreatePermission(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeletePermission("test")
 
@@ -49,7 +50,7 @@ func Test_CreatePermission(t *testing.T) {
 }
 
 func Test_DeleteRole(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeleteRole("test")
 
@@ -64,7 +65,7 @@ func Test_DeleteRole(t *testing.T) {
 }
 
 func Test_DeletePermission(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeletePermission("test")
 
@@ -79,7 +80,7 @@ func Test_DeletePermission(t *testing.T) {
 }
 
 func Test_AssignPermission(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeletePermission("test")
 	authority.DeleteRole("test")
@@ -101,7 +102,7 @@ func Test_AssignPermission(t *testing.T) {
 }
 
 func Test_AssignRole_CheckRole(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	api.App.DB.Ent.User.Delete().Where(user.NameEQ("test")).Exec(context.Background())
 	authority.DeleteRole("test")
@@ -140,7 +141,7 @@ func Test_AssignRole_CheckRole(t *testing.T) {
 }
 
 func Test_CheckPermission_CheckRolePermission(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeletePermission("test")
 	authority.DeletePermission("test2")
@@ -178,7 +179,7 @@ func Test_CheckPermission_CheckRolePermission(t *testing.T) {
 }
 
 func Test_RevokeRole_RevokePermission(t *testing.T) {
-	api.App.DB.Ent = enttest.Open(t, "postgres", "host=localhost port=5432 user=postgres dbname=library_management password=postgres sslmode=disable")
+	api.App.DB.Ent = enttest.Open(t, "postgres", connString)
 
 	authority.DeletePermission("test")
 	authority.DeleteRole("test")
