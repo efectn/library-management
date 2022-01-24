@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/efectn/library-management/pkg/database/ent"
@@ -45,7 +44,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 
 	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
 	if err != nil {
-		return utils.ReturnErrorMessage(c, err)
+		return utils.ReturnErrorMessage(c, err.Error())
 	}
 
 	_, err = api.App.DB.Ent.User.Create().SetEmail(u.Email).
@@ -60,7 +59,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		Save(context.Background())
 
 	if err != nil {
-		return utils.ReturnErrorMessage(c, err)
+		return utils.ReturnErrorMessage(c, err.Error())
 	}
 
 	return c.JSON(fiber.Map{
@@ -82,7 +81,7 @@ func (AuthController) Login(c *fiber.Ctx) error {
 	user, err := api.App.DB.Ent.User.Query().Where(user.EmailEQ(u.Email)).First(context.Background())
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return utils.ReturnErrorMessage(c, errors.New("user not found"), fiber.StatusNotFound)
+			return utils.ReturnErrorMessage(c, "User not found!", fiber.StatusNotFound)
 		}
 	}
 
@@ -98,7 +97,7 @@ func (AuthController) Login(c *fiber.Ctx) error {
 		// Generate encoded token and send it as response.
 		t, err := token.SignedString([]byte(api.App.Config.Middleware.Jwt.Key))
 		if err != nil {
-			return utils.ReturnErrorMessage(c, err)
+			return utils.ReturnErrorMessage(c, err.Error())
 		}
 
 		return c.JSON(fiber.Map{"message": "User logged in successfully!",
@@ -107,5 +106,5 @@ func (AuthController) Login(c *fiber.Ctx) error {
 
 	}
 
-	return utils.ReturnErrorMessage(c, errors.New("check password"), fiber.StatusUnauthorized)
+	return utils.ReturnErrorMessage(c, "Check password!", fiber.StatusUnauthorized)
 }

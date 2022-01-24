@@ -30,7 +30,7 @@ func ValidateStruct(input interface{}) []*errorResponse {
 
 func ParseBody(c *fiber.Ctx, body interface{}) error {
 	if err := c.BodyParser(body); err != nil {
-		return ReturnErrorMessage(c, err)
+		return ReturnErrorMessage(c, err.Error())
 	}
 
 	return nil
