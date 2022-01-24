@@ -11,6 +11,14 @@ jobs:
         image: 'redis:latest'
         ports:
           - '6379:6379'
+      postgres:
+        image: 'postgres:latest'
+        ports:
+          - '5432:5432'
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: library_management
+          POSTGRES_PASSWORD: postgres
     steps:
       - name: Install Go
         uses: actions/setup-go@v2

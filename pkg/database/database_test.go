@@ -62,3 +62,16 @@ func Test_Redis_Close(t *testing.T) {
 
 	assert.Equal(testStore.Redis.Close(), nil)
 }
+
+func Test_Ent_Connect(t *testing.T) {
+	err := testStore.SetupEnt("localhost", 5432, "postgres", "postgres", "library_management")
+	assert.NoError(t, err)
+}
+
+func Test_Ent_Close(t *testing.T) {
+	err := testStore.SetupEnt("localhost", 5432, "postgres", "postgres", "library_management")
+	assert.NoError(t, err)
+
+	err = testStore.Ent.Close()
+	assert.NoError(t, err)
+}
