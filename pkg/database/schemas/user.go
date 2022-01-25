@@ -1,12 +1,15 @@
 package schemas
 
 import (
+	"context"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	gen "github.com/efectn/library-management/pkg/database/ent"
+	"github.com/efectn/library-management/pkg/database/ent/hook"
 )
 
 // User holds the schema definition for the User entity.
@@ -48,5 +51,38 @@ func (User) Edges() []ent.Edge {
 			Annotations(entsql.Annotation{
 				OnDelete: entsql.Cascade,
 			}),
+	}
+}
+
+// Hook of the User.
+func (User) Hooks() []ent.Hook {
+	return []ent.Hook{
+		hook.On(
+			func(next ent.Mutator) ent.Mutator {
+				return hook.UserFunc(func(ctx context.Context, m *gen.UserMutation) (ent.Value, error) {
+					for _, field := range m.Fields() {
+						if v, _ := m.Field(field); v == "" {
+							switch field {
+							case "phone":
+								m.ResetPhone()
+							case "city":
+								m.ResetCity()
+							case "state":
+								m.ResetState()
+							case "country":
+								m.ResetCountry()
+							case "address":
+								m.ResetAddress()
+							case "zip_code":
+								m.ResetZipCode()
+							}
+						}
+					}
+
+					return next.Mutate(ctx, m)
+				})
+			},
+			ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne,
+		),
 	}
 }

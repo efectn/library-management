@@ -5,6 +5,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/efectn/library-management/pkg/database/ent/runtime"
 	"github.com/efectn/library-management/pkg/database/seeds"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/routes"

@@ -20,12 +20,12 @@ type RegisterRequest struct {
 	Email    string `validate:"required,email" json:"email"`
 	Password string `validate:"required,min=8" json:"password"`
 	Name     string `validate:"required,min=3,max=32" json:"name"`
-	Phone    string `validate:"e164" json:"phone"`
-	City     string `json:"city"`
-	State    string `json:"state"`
-	Country  string `json:"country"`
+	Phone    string `validate:"e164" json:"phone,omitempty"`
+	City     string `json:"city,omitempty"`
+	State    string `json:"state,omitempty"`
+	Country  string `json:"country,omitempty"`
 	ZipCode  int    `validate:"number" form:"zip_code" json:"zip_code"`
-	Adress   string `json:"address"`
+	Adress   string `json:"address,omitempty"`
 }
 
 type LoginRequest struct {
@@ -41,6 +41,9 @@ func (AuthController) Register(c *fiber.Ctx) error {
 	if validate != nil {
 		return c.Status(fiber.StatusForbidden).JSON(validate)
 	}
+
+	//panic(fmt.Sprintf("%T", u.City))
+	//return c.JSON(u)
 
 	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
 	if err != nil {
@@ -58,7 +61,9 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		SetAddress(u.Adress).
 		Save(context.Background())
 
-	if err != nil {
+	if ent.IsConstraintError(err) {
+		return utils.ReturnErrorMessage(c, "This email address is not available for sign up, please try something else.")
+	} else if err != nil {
 		return utils.ReturnErrorMessage(c, err.Error())
 	}
 
