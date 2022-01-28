@@ -25,8 +25,7 @@ func init() {
 	}()
 }
 
-// Fix:
-// - Prefork not working with zerolog.
+// TODO: Prefork not working with zerolog.
 
 // Execute the app
 func Execute() {

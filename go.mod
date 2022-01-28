@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/gofiber/fiber/v2 v2.25.0
-	github.com/klauspost/compress v1.14.1 // indirect
+	github.com/klauspost/compress v1.14.2 // indirect
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 )
 
@@ -19,7 +19,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.3.2-0.20220120225051-c3fac7d636dd // indirect
+	ariga.io/atlas v0.3.2 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -54,9 +54,9 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/gofiber/jwt/v3 v3.2.3
-	github.com/gofiber/storage/redis v0.0.0-20220121081204-5048d2480c82
+	github.com/gofiber/storage/redis v0.0.0-20220125143652-1883d62d065a
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
-	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
+	golang.org/x/crypto v0.0.0-20220126234351-aa10faf2a1f8
 )

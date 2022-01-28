@@ -2,13 +2,14 @@ package routes
 
 import (
 	"github.com/efectn/library-management/pkg/controllers"
+	"github.com/efectn/library-management/pkg/controllers/admin"
 	"github.com/efectn/library-management/pkg/globals/api"
-	"github.com/efectn/library-management/pkg/middlewares/permission"
+	"github.com/efectn/library-management/pkg/utils/route"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
 )
 
-var userController controllers.UserController
+var userController admin.UserController
 var authController controllers.AuthController
 
 func RegisterAPIRoutes(app fiber.Router) {
@@ -26,11 +27,9 @@ func RegisterAPIRoutes(app fiber.Router) {
 	}))
 
 	// Restricted Routes
-	users := app.Group("/users")
+	// Admin Routes
 
-	users.Get("/", permission.New("list-users"), userController.Index)
-	users.Post("/", permission.New("create-user"), userController.Store)
-	users.Get("/:id", permission.New("show-users"), userController.Show)
-	users.Patch("/:id", permission.New("edit-user"), userController.Update)
-	users.Delete("/:id", permission.New("delete-user"), userController.Destroy)
+	// TODO: 'admin.' naming-prefix not working. Fix it.
+	admin := app.Group("/admin").Name("admin.")
+	route.CreateResource("user", admin, userController)
 }

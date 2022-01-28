@@ -13,6 +13,7 @@ import (
 type app = struct {
 	Name        string        `toml:"name"`
 	Port        string        `toml:"port"`
+	PrintRoutes bool          `toml:"print-routes"`
 	Prefork     bool          `toml:"prefork"`
 	Production  bool          `toml:"production"`
 	IdleTimeout time.Duration `toml:"idle-timeout"`

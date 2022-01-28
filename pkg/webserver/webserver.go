@@ -47,7 +47,8 @@ func New(configPart *config.Config) *AppSkel {
 					"error":  err.Error(),
 				})
 			},
-			IdleTimeout: configPart.App.IdleTimeout * time.Second,
+			IdleTimeout:       configPart.App.IdleTimeout * time.Second,
+			EnablePrintRoutes: configPart.App.PrintRoutes,
 		}),
 		DB:     database.Init(),
 		Config: configPart,

@@ -3,6 +3,7 @@
 name = "LMS app"
 port = ":8080"
 idle-timeout = 5 # As seconds
+print-routes = false
 prefork = false
 production = false
 
