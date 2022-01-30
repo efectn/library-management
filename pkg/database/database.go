@@ -6,7 +6,7 @@ import (
 
 	"github.com/efectn/library-management/pkg/database/ent"
 	"github.com/gofiber/storage/redis"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 
 	"database/sql"
 
@@ -62,23 +62,23 @@ func (db *Database) MigrateModels() error {
 
 }
 
-func (db *Database) SeedModels(seeder ...Seeder) {
+func (db *Database) SeedModels(logger zerolog.Logger, seeder ...Seeder) {
 	for _, v := range seeder {
 
 		count, err := v.Count()
 		if err != nil {
-			log.Panic().Err(err).Msg("")
+			logger.Panic().Err(err).Msg("")
 		}
 
 		if count == 0 {
 			err = v.Seed()
 			if err != nil {
-				log.Panic().Err(err).Msg("")
+				logger.Panic().Err(err).Msg("")
 			}
 
-			log.Debug().Msg("Table has seeded successfully.")
+			logger.Debug().Msg("Table has seeded successfully.")
 		} else {
-			log.Warn().Msg("Table has seeded already. Skipping!")
+			logger.Warn().Msg("Table has seeded already. Skipping!")
 		}
 	}
 }

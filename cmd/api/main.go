@@ -11,6 +11,7 @@ import (
 	"github.com/efectn/library-management/pkg/routes"
 	"github.com/efectn/library-management/pkg/utils/config"
 	"github.com/efectn/library-management/pkg/webserver"
+	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
 )
 
@@ -25,7 +26,7 @@ func init() {
 	}()
 }
 
-// TODO: Prefork not working with zerolog.
+// TODO: Can't access endpoints when prefork was opened.
 // TODO: Remove ReturnError with Fiber v2.26.0
 
 // Execute the app
@@ -58,15 +59,17 @@ func Execute() {
 	}
 
 	// Seed
-	api.App.DB.SeedModels(seeds.PermissionSeeder{}, seeds.RoleSeeder{}, seeds.UserSeeder{})
+	api.App.DB.SeedModels(api.App.Logger, seeds.PermissionSeeder{}, seeds.RoleSeeder{}, seeds.UserSeeder{})
 
 	// Register Routes & Listen
 	routes.RegisterAPIRoutes(api.App.Fiber)
 
 	// Listen the app
-	err = api.App.Run()
-	if err != nil {
-		api.App.Logger.Panic().Err(err).Msg("")
+	if !fiber.IsChild() {
+		err = api.App.Run()
+		if err != nil {
+			api.App.Logger.Panic().Err(err).Msg("")
+		}
 	}
 }
 
