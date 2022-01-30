@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,8 +14,7 @@ type errorResponse struct {
 
 func ValidateStruct(input interface{}) []*errorResponse {
 	var errors []*errorResponse
-	validate := validator.New()
-	err := validate.Struct(input)
+	err := api.App.Validator.Struct(input)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			var element errorResponse

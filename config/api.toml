@@ -42,3 +42,10 @@ level = 1
 
 [middleware.recover]
 enable = true
+
+[middleware.monitor]
+enable = true
+path = "/monitor"
+
+#[middleware.pprof]
+#enable = true

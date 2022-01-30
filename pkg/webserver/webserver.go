@@ -13,18 +13,22 @@ import (
 	"github.com/efectn/library-management/pkg/globals"
 	"github.com/efectn/library-management/pkg/utils/config"
 	"github.com/efectn/library-management/pkg/utils/convert"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
+	_ "github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 type AppSkel struct {
-	Fiber  *fiber.App
-	DB     *database.Database
-	Config *config.Config
-	Logger zerolog.Logger
+	Fiber     *fiber.App
+	DB        *database.Database
+	Config    *config.Config
+	Logger    zerolog.Logger
+	Validator *validator.Validate
 }
 
 type PreforkHook struct{}
@@ -50,12 +54,13 @@ func New(configPart *config.Config) *AppSkel {
 			IdleTimeout:       configPart.App.IdleTimeout * time.Second,
 			EnablePrintRoutes: configPart.App.PrintRoutes,
 		}),
-		DB:     database.Init(),
-		Config: configPart,
-		Logger: zerolog.Logger{},
+		DB:        database.Init(),
+		Config:    configPart,
+		Logger:    zerolog.Logger{},
+		Validator: validator.New(),
 	}
 
-	// Register some middlewares
+	// Register several middlewares
 	app.Fiber.Use(compress.New(compress.Config{
 		Next:  config.IsEnabled(configPart.Middleware.Compress.Enable),
 		Level: configPart.Middleware.Compress.Level,
@@ -63,6 +68,12 @@ func New(configPart *config.Config) *AppSkel {
 
 	app.Fiber.Use(recover.New(recover.Config{
 		Next: config.IsEnabled(configPart.Middleware.Recover.Enable),
+	}))
+
+	//app.Fiber.Use(pprof.New())
+
+	app.Fiber.Get(configPart.Middleware.Monitor.Path, monitor.New(monitor.Config{
+		Next: config.IsEnabled(configPart.Middleware.Monitor.Enable),
 	}))
 
 	return app

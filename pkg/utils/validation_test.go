@@ -3,6 +3,9 @@ package utils
 import (
 	"testing"
 
+	"github.com/efectn/library-management/pkg/globals/api"
+	"github.com/efectn/library-management/pkg/webserver"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
@@ -15,6 +18,11 @@ type exampleRequest struct {
 
 type demo struct {
 	Name string `form:"name"`
+}
+
+func init() {
+	api.App = new(webserver.AppSkel)
+	api.App.Validator = validator.New()
 }
 
 func Test_ValidateStruct(t *testing.T) {

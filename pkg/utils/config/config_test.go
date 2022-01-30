@@ -76,6 +76,13 @@ var apiConfig = Config{
 		Recover: struct{ Enable bool }{
 			Enable: true,
 		},
+		Monitor: struct {
+			Enable bool
+			Path   string
+		}{
+			Enable: true,
+			Path:   "/monitor",
+		},
 	},
 }
 

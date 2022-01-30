@@ -63,6 +63,11 @@ type middleware = struct {
 	Recover struct {
 		Enable bool
 	}
+
+	Monitor struct {
+		Enable bool
+		Path   string
+	}
 }
 
 type Config struct {
