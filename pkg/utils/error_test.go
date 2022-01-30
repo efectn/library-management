@@ -42,5 +42,5 @@ func Test_ReturnError(t *testing.T) {
 
 	// Check error message
 	ReturnError(c, "test")
-	assert.Equal(t, "{\"message\":\"test\"}", convert.UnsafeString(c.Response().Body()))
+	assert.Equal(t, "{\"message\":\"test\",\"status\":false}", convert.UnsafeString(c.Response().Body()))
 }
