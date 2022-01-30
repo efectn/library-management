@@ -20,13 +20,11 @@ type demo struct {
 	Name string `form:"name"`
 }
 
-func init() {
-	api.App = new(webserver.AppSkel)
-	api.App.Validator = validator.New()
-}
-
 func Test_ValidateStruct(t *testing.T) {
 	t.Parallel()
+
+	api.App = new(webserver.AppSkel)
+	api.App.Validator = validator.New()
 
 	req := new(exampleRequest)
 	req.Age = 18
@@ -43,6 +41,9 @@ func Test_ValidateStruct(t *testing.T) {
 }
 
 func Benchmark_ValidateStruct(b *testing.B) {
+	api.App = new(webserver.AppSkel)
+	api.App.Validator = validator.New()
+
 	var resp []*errorResponse
 
 	req := new(exampleRequest)
