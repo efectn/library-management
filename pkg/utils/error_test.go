@@ -11,7 +11,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func Test_ReturnErrorMessage(t *testing.T) {
+func Test_ReturnError(t *testing.T) {
 	t.Parallel()
 
 	app := fiber.New()
@@ -21,7 +21,7 @@ func Test_ReturnErrorMessage(t *testing.T) {
 
 	// Check default status code
 	app.Get("/", func(c *fiber.Ctx) error {
-		return ReturnErrorMessage(c, "test")
+		return ReturnError(c, "test")
 	})
 
 	body := &bytes.Buffer{}
@@ -32,7 +32,7 @@ func Test_ReturnErrorMessage(t *testing.T) {
 
 	// Check custom status code
 	app.Get("/c", func(c *fiber.Ctx) error {
-		return ReturnErrorMessage(c, "test", fiber.StatusUnauthorized)
+		return ReturnError(c, "test", fiber.StatusUnauthorized)
 	})
 
 	resp, err = app.Test(httptest.NewRequest(fiber.MethodGet, "/c", body))
@@ -41,6 +41,6 @@ func Test_ReturnErrorMessage(t *testing.T) {
 	assert.Equal(t, fiber.StatusUnauthorized, resp.StatusCode)
 
 	// Check error message
-	ReturnErrorMessage(c, "test")
+	ReturnError(c, "test")
 	assert.Equal(t, "{\"message\":\"test\"}", convert.UnsafeString(c.Response().Body()))
 }

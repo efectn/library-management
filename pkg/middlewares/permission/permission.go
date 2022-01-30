@@ -16,16 +16,13 @@ func New(name string) fiber.Handler {
 		id := int(claims["fields"].(map[string]interface{})["id"].(float64))
 		perm, err := auth.CheckPermission(id, name)
 		if err != nil {
-			return c.JSON(fiber.Map{
-				"status":  false,
-				"message": err.Error(),
-			})
+			return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 		}
 
 		if perm {
 			return c.Next()
 		}
 
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return fiber.NewError(fiber.StatusUnauthorized, "Sorry, you don't have access to this page!")
 	}
 }

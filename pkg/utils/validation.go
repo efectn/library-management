@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"reflect"
+
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -30,8 +32,25 @@ func ValidateStruct(input interface{}) []*errorResponse {
 
 func ParseBody(c *fiber.Ctx, body interface{}) error {
 	if err := c.BodyParser(body); err != nil {
-		return ReturnErrorMessage(c, err.Error())
+		return err
 	}
 
 	return nil
+}
+
+func ParseAndValidate(c *fiber.Ctx, body interface{}) []*errorResponse {
+	v := reflect.ValueOf(body)
+
+	switch v.Kind() {
+	case reflect.Ptr:
+		ParseBody(c, body)
+
+		return ValidateStruct(v.Elem().Interface())
+	case reflect.Struct:
+		ParseBody(c, &body)
+
+		return ValidateStruct(v)
+	default:
+		return nil
+	}
 }

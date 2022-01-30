@@ -26,6 +26,7 @@ func init() {
 }
 
 // TODO: Prefork not working with zerolog.
+// TODO: Remove ReturnError with Fiber v2.26.0
 
 // Execute the app
 func Execute() {

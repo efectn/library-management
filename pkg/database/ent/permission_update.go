@@ -35,20 +35,6 @@ func (pu *PermissionUpdate) SetName(s string) *PermissionUpdate {
 	return pu
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (pu *PermissionUpdate) SetCreatedAt(t time.Time) *PermissionUpdate {
-	pu.mutation.SetCreatedAt(t)
-	return pu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (pu *PermissionUpdate) SetNillableCreatedAt(t *time.Time) *PermissionUpdate {
-	if t != nil {
-		pu.SetCreatedAt(*t)
-	}
-	return pu
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (pu *PermissionUpdate) SetUpdatedAt(t time.Time) *PermissionUpdate {
 	pu.mutation.SetUpdatedAt(t)
@@ -184,13 +170,6 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: permission.FieldName,
 		})
 	}
-	if value, ok := pu.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: permission.FieldCreatedAt,
-		})
-	}
 	if value, ok := pu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -274,20 +253,6 @@ type PermissionUpdateOne struct {
 // SetName sets the "name" field.
 func (puo *PermissionUpdateOne) SetName(s string) *PermissionUpdateOne {
 	puo.mutation.SetName(s)
-	return puo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (puo *PermissionUpdateOne) SetCreatedAt(t time.Time) *PermissionUpdateOne {
-	puo.mutation.SetCreatedAt(t)
-	return puo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (puo *PermissionUpdateOne) SetNillableCreatedAt(t *time.Time) *PermissionUpdateOne {
-	if t != nil {
-		puo.SetCreatedAt(*t)
-	}
 	return puo
 }
 
@@ -448,13 +413,6 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 			Type:   field.TypeString,
 			Value:  value,
 			Column: permission.FieldName,
-		})
-	}
-	if value, ok := puo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: permission.FieldCreatedAt,
 		})
 	}
 	if value, ok := puo.mutation.UpdatedAt(); ok {

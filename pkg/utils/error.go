@@ -4,13 +4,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func ReturnErrorMessage(c *fiber.Ctx, err string, statusCodeOpt ...int) error {
+func ReturnError(c *fiber.Ctx, err interface{}, statusCodeOpt ...int) error {
 	statusCode := fiber.StatusForbidden
 	if len(statusCodeOpt) > 0 {
 		statusCode = statusCodeOpt[0]
 	}
 
 	return c.Status(statusCode).JSON(fiber.Map{
+		"status":  false,
 		"message": err,
 	})
 }

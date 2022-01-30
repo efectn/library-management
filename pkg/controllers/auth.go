@@ -25,7 +25,7 @@ type RegisterRequest struct {
 	State    string `json:"state,omitempty"`
 	Country  string `json:"country,omitempty"`
 	ZipCode  int    `validate:"number" form:"zip_code" json:"zip_code"`
-	Adress   string `json:"address,omitempty"`
+	Address  string `json:"address,omitempty"`
 }
 
 type LoginRequest struct {
@@ -35,16 +35,13 @@ type LoginRequest struct {
 
 func (AuthController) Register(c *fiber.Ctx) error {
 	u := new(RegisterRequest)
-	utils.ParseBody(c, u)
-
-	validate := utils.ValidateStruct(*u)
-	if validate != nil {
-		return c.Status(fiber.StatusForbidden).JSON(validate)
+	if err := utils.ParseAndValidate(c, u); err != nil {
+		return utils.ReturnError(c, err, fiber.StatusForbidden)
 	}
 
 	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
 	if err != nil {
-		return utils.ReturnErrorMessage(c, err.Error())
+		return err
 	}
 
 	_, err = api.App.DB.Ent.User.Create().SetEmail(u.Email).
@@ -55,13 +52,13 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		SetState(u.State).
 		SetCountry(u.Country).
 		SetZipCode(u.ZipCode).
-		SetAddress(u.Adress).
+		SetAddress(u.Address).
 		Save(context.Background())
 
 	if ent.IsConstraintError(err) {
-		return utils.ReturnErrorMessage(c, "This email address is not available for sign up, please try something else.")
+		return fiber.NewError(fiber.StatusForbidden, "This email address is not available for sign up, please try something else")
 	} else if err != nil {
-		return utils.ReturnErrorMessage(c, err.Error())
+		return err
 	}
 
 	return c.JSON(fiber.Map{
@@ -72,19 +69,16 @@ func (AuthController) Register(c *fiber.Ctx) error {
 
 func (AuthController) Login(c *fiber.Ctx) error {
 	u := new(LoginRequest)
-	utils.ParseBody(c, u)
-
-	validate := utils.ValidateStruct(*u)
-	if validate != nil {
-		return c.Status(fiber.StatusForbidden).JSON(validate)
+	if err := utils.ParseAndValidate(c, u); err != nil {
+		return utils.ReturnError(c, err, fiber.StatusForbidden)
 	}
 
 	// Check exists
 	user, err := api.App.DB.Ent.User.Query().Where(user.EmailEQ(u.Email)).First(context.Background())
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return utils.ReturnErrorMessage(c, "User not found!", fiber.StatusNotFound)
-		}
+	if ent.IsNotFound(err) {
+		return fiber.NewError(fiber.StatusNotFound, "User not found!")
+	} else if err != nil {
+		return err
 	}
 
 	// Check password
@@ -99,7 +93,7 @@ func (AuthController) Login(c *fiber.Ctx) error {
 		// Generate encoded token and send it as response.
 		t, err := token.SignedString([]byte(api.App.Config.Middleware.Jwt.Key))
 		if err != nil {
-			return utils.ReturnErrorMessage(c, err.Error())
+			return err
 		}
 
 		return c.JSON(fiber.Map{"message": "User logged in successfully!",
@@ -108,5 +102,5 @@ func (AuthController) Login(c *fiber.Ctx) error {
 
 	}
 
-	return utils.ReturnErrorMessage(c, "Check password!", fiber.StatusUnauthorized)
+	return fiber.NewError(fiber.StatusUnauthorized, "Check password!")
 }

@@ -21,9 +21,12 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("email").
-			Unique(),
-		field.String("password"),
-		field.String("name"),
+			Unique().
+			NotEmpty(),
+		field.String("password").
+			NotEmpty(),
+		field.String("name").
+			NotEmpty(),
 		field.String("phone").
 			Optional(),
 		field.String("city").
@@ -37,7 +40,8 @@ func (User) Fields() []ent.Field {
 		field.Int("zip_code").
 			Optional(),
 		field.Time("created_at").
-			Default(time.Now),
+			Default(time.Now).
+			Immutable(),
 		field.Time("updated_at").
 			Default(time.Now).
 			UpdateDefault(time.Now),
