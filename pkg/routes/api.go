@@ -29,7 +29,6 @@ func RegisterAPIRoutes(app fiber.Router) {
 	// Restricted Routes
 	// Admin Routes
 
-	// TODO: 'admin.' naming-prefix not working. Fix it.
 	admin := app.Group("/admin").Name("admin.")
 	route.CreateResource("user", admin, userController)
 }
