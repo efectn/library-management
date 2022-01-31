@@ -11,7 +11,7 @@ require (
 
 require (
 	entgo.io/ent v0.10.0
-	github.com/dgrr/http2 v0.3.3
+	github.com/dgrr/http2 v0.3.4
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
