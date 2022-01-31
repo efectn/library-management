@@ -1,12 +1,13 @@
 package config
 
 import (
+	"os"
 	"strings"
 	"time"
 
-	"github.com/BurntSushi/toml"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/pelletier/go-toml/v2"
 	"github.com/rs/zerolog"
 )
 
@@ -79,17 +80,19 @@ type Config struct {
 
 func ParseConfig(filename string, debug ...bool) (*Config, error) {
 	var contents *Config
+	var file []byte
 	var err error
 
 	if len(debug) > 0 {
-		_, err = toml.DecodeFile(filename, &contents)
+		file, err = os.ReadFile(filename)
 	} else {
-		_, err = toml.DecodeFile("./config/"+filename+".toml", &contents)
+		file, err = os.ReadFile("./config/" + filename + ".toml")
 	}
 	if err != nil {
 		return &Config{}, err
 	}
 
+	err = toml.Unmarshal(file, &contents)
 	return contents, err
 }
 
