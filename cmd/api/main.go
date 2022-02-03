@@ -27,7 +27,7 @@ func init() {
 }
 
 // TODO: Can't access endpoints when prefork was opened.
-// TODO: Remove ReturnError with Fiber v2.26.0
+// TODO: Remove SaveFileToStorage with Fiber v2.27.0
 
 // Execute the app
 func Execute() {

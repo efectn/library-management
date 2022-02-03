@@ -65,6 +65,8 @@ github.com/gofiber/fiber/v2 v2.26.0 h1:Awnfqp3fqbZzV3wZWMRJ6Xo2U8X0Ls68M7tXjx52N
 github.com/gofiber/fiber/v2 v2.26.0/go.mod h1:7efVWcBOZi1PyMWznnbitjnARPA7nYZxmQXJVod0bo0=
 github.com/gofiber/jwt/v3 v3.2.3 h1:p0Eraucxe7TpTPkkCHXiOu+m6UKknTvF+3Qgf/42vdA=
 github.com/gofiber/jwt/v3 v3.2.3/go.mod h1:f+cElEcz58ogfz64nolcxiy7FCrC5At9dJR8RZNG9Ow=
+github.com/gofiber/storage/memory v0.0.0-20220125143652-1883d62d065a h1:OhftwEsXTmZSbopOzZDM1ewI/Z3lGI4KHftcV7mVzZM=
+github.com/gofiber/storage/memory v0.0.0-20220125143652-1883d62d065a/go.mod h1:7aJr9KTG0EoLVCqJ8Pnr2LpRGn2DrcO5euzmpw/GB00=
 github.com/gofiber/storage/redis v0.0.0-20220125143652-1883d62d065a h1:RvacwZ78x5eE5Q9xkt/ioqmGdZL/hJW+uMrPYwu2iO8=
 github.com/gofiber/storage/redis v0.0.0-20220125143652-1883d62d065a/go.mod h1:fqLTf8I4K1Y7OBSkOA0oFip+sE2v3ZhiAICMmsmoaR8=
 github.com/gofiber/utils v0.1.2 h1:1SH2YEz4RlNS0tJlMJ0bGwO0JkqPqvq6TbHK9tXZKtk=
