@@ -36,7 +36,7 @@ type LoginRequest struct {
 func (AuthController) Register(c *fiber.Ctx) error {
 	u := new(RegisterRequest)
 	if err := utils.ParseAndValidate(c, u); err != nil {
-		return utils.ReturnError(c, err, fiber.StatusForbidden)
+		return fiber.NewErrors(fiber.StatusForbidden, err)
 	}
 
 	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
@@ -56,7 +56,7 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		Save(context.Background())
 
 	if ent.IsConstraintError(err) {
-		return fiber.NewError(fiber.StatusForbidden, "This email address is not available for sign up, please try something else")
+		return fiber.NewErrors(fiber.StatusForbidden, "This email address is not available for sign up, please try something else")
 	} else if err != nil {
 		return err
 	}
@@ -70,13 +70,13 @@ func (AuthController) Register(c *fiber.Ctx) error {
 func (AuthController) Login(c *fiber.Ctx) error {
 	u := new(LoginRequest)
 	if err := utils.ParseAndValidate(c, u); err != nil {
-		return utils.ReturnError(c, err, fiber.StatusForbidden)
+		return fiber.NewErrors(fiber.StatusForbidden, err)
 	}
 
 	// Check exists
 	user, err := api.App.DB.Ent.User.Query().Where(user.EmailEQ(u.Email)).First(context.Background())
 	if ent.IsNotFound(err) {
-		return fiber.NewError(fiber.StatusNotFound, "User not found!")
+		return fiber.NewErrors(fiber.StatusNotFound, "User not found!")
 	} else if err != nil {
 		return err
 	}
@@ -102,5 +102,5 @@ func (AuthController) Login(c *fiber.Ctx) error {
 
 	}
 
-	return fiber.NewError(fiber.StatusUnauthorized, "Check password!")
+	return fiber.NewErrors(fiber.StatusUnauthorized, "Check password!")
 }

@@ -9,13 +9,13 @@ import (
 )
 
 type errorResponse struct {
-	Name    string
-	Tag     string
-	Message string
+	Name    string `json:"name"`
+	Tag     string `json:"tag"`
+	Message string `json:"message"`
 }
 
-func ValidateStruct(input interface{}) []*errorResponse {
-	var errors []*errorResponse
+func ValidateStruct(input interface{}) []errorResponse {
+	var errors []errorResponse
 	err := api.App.Validator.Struct(input)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
@@ -23,7 +23,7 @@ func ValidateStruct(input interface{}) []*errorResponse {
 			element.Name = err.Field()
 			element.Tag = err.Tag()
 			element.Message = err.Error()
-			errors = append(errors, &element)
+			errors = append(errors, element)
 		}
 	}
 
@@ -38,7 +38,7 @@ func ParseBody(c *fiber.Ctx, body interface{}) error {
 	return nil
 }
 
-func ParseAndValidate(c *fiber.Ctx, body interface{}) []*errorResponse {
+func ParseAndValidate(c *fiber.Ctx, body interface{}) []errorResponse {
 	v := reflect.ValueOf(body)
 
 	switch v.Kind() {

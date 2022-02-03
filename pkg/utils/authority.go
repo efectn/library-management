@@ -3,21 +3,12 @@ package utils
 
 import (
 	"context"
-	"errors"
 
 	"github.com/efectn/library-management/pkg/database/ent"
 	"github.com/efectn/library-management/pkg/database/ent/permission"
 	"github.com/efectn/library-management/pkg/database/ent/role"
 	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
-)
-
-var (
-	ErrRoleCreatedAlready = errors.New("authority: the role has created already")
-	ErrPermCreatedAlready = errors.New("authority: the permission has created already")
-	ErrRoleNotFound       = errors.New("authority: the role not found")
-	ErrUserNotFound       = errors.New("authority: the user not found")
-	ErrPermNotFound       = errors.New("authority: the permission(s) not found")
 )
 
 // Authority helps deal with permissions

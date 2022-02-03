@@ -42,13 +42,16 @@ func New(configPart *config.Config) *AppSkel {
 			DisableStartupMessage: true,
 			ErrorHandler: func(c *fiber.Ctx, err error) error {
 				code := fiber.StatusInternalServerError
+				var messages interface{}
+
 				if e, ok := err.(*fiber.Error); ok {
 					code = e.Code
+					messages = e.Message
 				}
 
 				return c.Status(code).JSON(fiber.Map{
-					"status": false,
-					"error":  err.Error(),
+					"status":   false,
+					"messages": messages,
 				})
 			},
 			IdleTimeout:       configPart.App.IdleTimeout * time.Second,

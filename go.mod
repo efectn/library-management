@@ -4,14 +4,14 @@ go 1.17
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/fiber/v2 v2.25.0
+	github.com/gofiber/fiber/v2 v2.26.0
 	github.com/klauspost/compress v1.14.2 // indirect
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 )
 
 require (
 	entgo.io/ent v0.10.0
-	github.com/dgrr/http2 v0.3.3
+	github.com/dgrr/http2 v0.3.4
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
@@ -58,5 +58,5 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
-	golang.org/x/crypto v0.0.0-20220128200615-198e4374d7ed
+	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838
 )
