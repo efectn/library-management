@@ -12,6 +12,7 @@ require (
 require (
 	entgo.io/ent v0.10.0
 	github.com/dgrr/http2 v0.3.4
+	github.com/gofiber/storage/memory v0.0.0-20220125143652-1883d62d065a
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
@@ -28,7 +29,6 @@ require (
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/gofiber/storage/memory v0.0.0-20220125143652-1883d62d065a // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.11.1 // indirect
@@ -54,7 +54,7 @@ require (
 require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
-	github.com/gofiber/jwt/v3 v3.2.3
+	github.com/gofiber/jwt/v3 v3.2.4
 	github.com/gofiber/storage/redis v0.0.0-20220125143652-1883d62d065a
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/rs/zerolog v1.26.1
