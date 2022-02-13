@@ -4,6 +4,7 @@ import (
 	"github.com/efectn/library-management/pkg/controllers"
 	"github.com/efectn/library-management/pkg/controllers/admin"
 	"github.com/efectn/library-management/pkg/globals/api"
+	_ "github.com/efectn/library-management/pkg/utils/errors"
 	"github.com/efectn/library-management/pkg/utils/route"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
@@ -14,8 +15,11 @@ var authController controllers.AuthController
 
 func RegisterAPIRoutes(app fiber.Router) {
 	// Auth Routes
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString("test")
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"version": "0.0.1",
+			"message": "App is running successfully!",
+		})
 	})
 	app.Post("/register", authController.Register)
 	app.Post("/login", authController.Login)

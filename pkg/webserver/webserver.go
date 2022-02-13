@@ -13,6 +13,7 @@ import (
 	"github.com/efectn/library-management/pkg/globals"
 	"github.com/efectn/library-management/pkg/utils/config"
 	"github.com/efectn/library-management/pkg/utils/convert"
+	"github.com/efectn/library-management/pkg/utils/errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
@@ -43,6 +44,11 @@ func New(configPart *config.Config) *AppSkel {
 			ErrorHandler: func(c *fiber.Ctx, err error) error {
 				code := fiber.StatusInternalServerError
 				var messages interface{}
+
+				if e, ok := err.(*errors.Error); ok {
+					code = e.Code
+					messages = e.Message
+				}
 
 				if e, ok := err.(*fiber.Error); ok {
 					code = e.Code
