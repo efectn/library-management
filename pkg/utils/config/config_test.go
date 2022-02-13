@@ -83,6 +83,9 @@ var apiConfig = Config{
 			Enable: true,
 			Path:   "/monitor",
 		},
+		Pprof: struct{ Enable bool }{
+			Enable: false,
+		},
 	},
 }
 

@@ -18,7 +18,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
-	_ "github.com/gofiber/fiber/v2/middleware/pprof"
+	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -79,7 +79,9 @@ func New(configPart *config.Config) *AppSkel {
 		Next: config.IsEnabled(configPart.Middleware.Recover.Enable),
 	}))
 
-	//app.Fiber.Use(pprof.New())
+	app.Fiber.Use(pprof.New(pprof.Config{
+		Next: config.IsEnabled(configPart.Middleware.Pprof.Enable),
+	}))
 
 	app.Fiber.Get(configPart.Middleware.Monitor.Path, monitor.New(monitor.Config{
 		Next: config.IsEnabled(configPart.Middleware.Monitor.Enable),

@@ -47,5 +47,5 @@ enable = true
 enable = true
 path = "/monitor"
 
-#[middleware.pprof]
-#enable = true
+[middleware.pprof]
+enable = false

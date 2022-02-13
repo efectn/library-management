@@ -69,6 +69,10 @@ type middleware = struct {
 		Enable bool
 		Path   string
 	}
+
+	Pprof struct {
+		Enable bool
+	}
 }
 
 type Config struct {
