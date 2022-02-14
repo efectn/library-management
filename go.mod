@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/fiber/v2 v2.26.0
+	github.com/gofiber/fiber/v2 v2.27.0
 	github.com/klauspost/compress v1.14.2 // indirect
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 )
