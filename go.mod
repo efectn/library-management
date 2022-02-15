@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/fiber/v2 v2.26.0
+	github.com/gofiber/fiber/v2 v2.27.0
 	github.com/klauspost/compress v1.14.2 // indirect
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 )
@@ -54,7 +54,7 @@ require (
 require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
-	github.com/gofiber/jwt/v3 v3.2.4
+	github.com/gofiber/jwt/v3 v3.2.6
 	github.com/gofiber/storage/redis v0.0.0-20220210144513-cc5ccf062b5d
 	github.com/golang-jwt/jwt/v4 v4.3.0
 	github.com/rs/zerolog v1.26.1
