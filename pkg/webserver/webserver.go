@@ -1,8 +1,6 @@
 package webserver
 
 import (
-	"crypto/tls"
-	"net"
 	"os"
 	"runtime"
 	"strings"
@@ -171,36 +169,22 @@ func (app *AppSkel) Run() error {
 	}
 
 	// Listen the app (with TLS & HTTP/2 Support)
-	var ln net.Listener
-
 	if app.Config.App.TLS.Enable {
 		app.Logger.Debug().Msg("TLS support has enabled.")
 
-		cer, err := tls.LoadX509KeyPair(app.Config.App.TLS.CertFile, app.Config.App.TLS.KeyFile)
-		if err != nil {
+		if err := app.Fiber.ListenTLS(app.Config.App.Port, app.Config.App.TLS.CertFile, app.Config.App.TLS.KeyFile); err != nil {
 			return err
 		}
-
-		cfg := &tls.Config{Certificates: []tls.Certificate{cer}}
-		ln, err = tls.Listen("tcp", app.Config.App.Port, cfg)
-		if err != nil {
-			return err
-		}
-
 		if app.Config.App.TLS.HTTP2Support {
 			app.Logger.Debug().Msg("HTTP/2 support has enabled.")
 
-			http2.ConfigureServerAndConfig(app.Fiber.Server(), cfg)
-		}
-	} else {
-		ln, err = net.Listen("tcp", app.Config.App.Port)
-		if err != nil {
-			return err
+			http2.ConfigureServer(app.Fiber.Server(), http2.ServerConfig{
+				Debug: !app.Config.App.Production,
+			})
 		}
 	}
 
-	err = app.Fiber.Listener(ln)
-	if err != nil {
+	if err := app.Fiber.Listen(app.Config.App.Port); err != nil {
 		return err
 	}
 

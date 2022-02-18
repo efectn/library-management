@@ -13,7 +13,7 @@ var apiConfig = Config{
 	App: app{
 		Name:        "LMS app",
 		Port:        ":8080",
-		Prefork:     false,
+		Prefork:     true,
 		Production:  false,
 		IdleTimeout: time.Duration(5),
 		TLS: struct {

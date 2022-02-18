@@ -5,14 +5,15 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gofiber/fiber/v2"
+	"github.com/rs/zerolog/log"
+
 	_ "github.com/efectn/library-management/pkg/database/ent/runtime"
 	"github.com/efectn/library-management/pkg/database/seeds"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/routes"
 	"github.com/efectn/library-management/pkg/utils/config"
 	"github.com/efectn/library-management/pkg/webserver"
-	"github.com/gofiber/fiber/v2"
-	"github.com/rs/zerolog/log"
 )
 
 // Init the app
@@ -26,13 +27,11 @@ func init() {
 	}()
 }
 
-// TODO: Can't access endpoints when prefork was opened.
-
 // Execute the app
 func Execute() {
 	// Parse Config
 	parseConfig, err := config.ParseConfig("api")
-	if err != nil {
+	if err != nil && !fiber.IsChild() {
 		log.Panic().Err(err).Msg("")
 	}
 
@@ -64,11 +63,8 @@ func Execute() {
 	routes.RegisterAPIRoutes(api.App.Fiber)
 
 	// Listen the app
-	if !fiber.IsChild() {
-		err = api.App.Run()
-		if err != nil {
-			api.App.Logger.Panic().Err(err).Msg("")
-		}
+	if err := api.App.Run(); err != nil {
+		api.App.Logger.Panic().Err(err).Msg("")
 	}
 }
 
