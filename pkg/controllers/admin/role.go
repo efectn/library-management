@@ -60,86 +60,71 @@ func (RoleController) Store(c *fiber.Ctx) error {
 }
 
 func (RoleController) Show(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if id != "" {
-		idInt, err := strconv.Atoi(id)
-		if err != nil {
-			return err
-		}
-
-		role, err := api.App.DB.Ent.Role.Query().
-			Where(erole.IDEQ(idInt)).
-			WithPermissions().
-			First(context.Background())
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(fiber.Map{
-			"message": "The role created successfully!",
-			"role":    role,
-		})
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return err
 	}
 
-	return errors.NewErrors(fiber.StatusBadRequest, "Please enter a valid ID.")
+	role, err := api.App.DB.Ent.Role.Query().
+		Where(erole.IDEQ(id)).
+		WithPermissions().
+		First(context.Background())
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "The role created successfully!",
+		"role":    role,
+	})
 }
 
 func (RoleController) Update(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if id != "" {
-		r := new(UpdateRoleRequest)
-		if err := utils.ParseAndValidate(c, r); err != nil {
-			return errors.NewErrors(fiber.StatusForbidden, err)
-		}
-
-		idInt, err := strconv.Atoi(id)
-		if err != nil {
-			return err
-		}
-
-		ur := api.App.DB.Ent.Role.UpdateOneID(idInt)
-
-		// Update name
-		if r.Name != "" {
-			ur = ur.SetName(r.Name)
-		}
-
-		// Update roles
-		if r.PermissionIDs != nil {
-			ur = ur.ClearPermissions().AddPermissionIDs(r.PermissionIDs...)
-		}
-
-		role, err := ur.Save(context.Background())
-		if err = errors.HandleEntErrors(err); err != nil {
-			return err
-		}
-
-		return c.JSON(fiber.Map{
-			"message": "The role created successfully!",
-			"role":    role,
-		})
+	r := new(UpdateRoleRequest)
+	if err := utils.ParseAndValidate(c, r); err != nil {
+		return errors.NewErrors(fiber.StatusForbidden, err)
 	}
 
-	return errors.NewErrors(fiber.StatusBadRequest, "Please enter a valid ID.")
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	ur := api.App.DB.Ent.Role.UpdateOneID(id)
+
+	// Update name
+	if r.Name != "" {
+		ur = ur.SetName(r.Name)
+	}
+
+	// Update roles
+	if r.PermissionIDs != nil {
+		ur = ur.ClearPermissions().AddPermissionIDs(r.PermissionIDs...)
+	}
+
+	role, err := ur.Save(context.Background())
+	if err = errors.HandleEntErrors(err); err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "The role created successfully!",
+		"role":    role,
+	})
 }
 
 func (RoleController) Destroy(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if id != "" {
-		idInt, err := strconv.Atoi(id)
-		if err != nil {
-			return err
-		}
-
-		err = api.App.DB.Ent.Role.DeleteOneID(idInt).Exec(context.Background())
-		if err = errors.HandleEntErrors(err); err != nil {
-			return err
-		}
-
-		return c.JSON(fiber.Map{
-			"message": "The role deleted successfully!",
-		})
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return err
 	}
 
-	return errors.NewErrors(fiber.StatusBadRequest, "Please enter a valid ID.")
+	err = api.App.DB.Ent.Role.DeleteOneID(id).Exec(context.Background())
+	if err = errors.HandleEntErrors(err); err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "The role deleted successfully!",
+	})
 }
