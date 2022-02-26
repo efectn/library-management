@@ -32,6 +32,13 @@ name = "library_management"
 user = "postgres"
 password = "postgres"
 
+[db.s3]
+endpoint = "http://minio:9000"
+bucket = "lms"
+region = "us-east-1"
+access_key = "minio"
+secret_key = "minio123"
+
 [middleware.jwt]
 secret = "UjXn2r5u8x/A?D(G+KbPeSgVkYp3s6v9"
 hours = 5

@@ -6,6 +6,7 @@ import (
 
 	"github.com/efectn/library-management/pkg/database/ent"
 	"github.com/gofiber/storage/redis"
+	"github.com/gofiber/storage/s3"
 	"github.com/rs/zerolog"
 
 	"database/sql"
@@ -19,6 +20,7 @@ import (
 type Database struct {
 	Ent   *ent.Client
 	Redis *redis.Storage
+	S3    *s3.Storage
 }
 
 type Seeder interface {
@@ -60,6 +62,22 @@ func (db *Database) SetupRedis(url string, reset bool) error {
 	})
 
 	db.Redis = conn
+
+	return nil
+}
+
+func (db *Database) SetupS3(endpoint, bucket, region, accessKey, secretKey string) error {
+	conn := s3.New(s3.Config{
+		Bucket:   bucket,
+		Region:   region,
+		Endpoint: endpoint,
+		Credentials: s3.Credentials{
+			AccessKey:       accessKey,
+			SecretAccessKey: secretKey,
+		},
+	})
+
+	db.S3 = conn
 
 	return nil
 }

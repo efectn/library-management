@@ -96,16 +96,28 @@ func New(configPart *config.Config) *AppSkel {
 }
 
 func (app *AppSkel) SetupDB() error {
+	// Setup Redis
 	err := app.DB.SetupRedis(app.Config.DB.Redis.Url, app.Config.DB.Redis.Reset)
 	if err != nil {
 		return err
 	}
 
+	// Setup Ent
 	err = app.DB.SetupEnt(app.Config.DB.Postgres.Host,
 		app.Config.DB.Postgres.Port,
 		app.Config.DB.Postgres.User,
 		app.Config.DB.Postgres.Password,
 		app.Config.DB.Postgres.Name, app.Logger)
+	if err != nil {
+		return err
+	}
+
+	// Setup S3
+	err = app.DB.SetupS3(app.Config.DB.S3.Endpoint,
+		app.Config.DB.S3.Bucket,
+		app.Config.DB.S3.Region,
+		app.Config.DB.S3.AccessKey,
+		app.Config.DB.S3.SecretKey)
 	if err != nil {
 		return err
 	}

@@ -11,6 +11,18 @@ services:
       - default
     ports:
       - "6379:6379"
+  minio:
+    image: minio/minio
+    volumes:
+      - "./storage/minio:/s3"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    entrypoint: sh
+    command: -c "minio server /s3 --console-address :9001"
   postgres:
     image: postgres:alpine
     environment:
@@ -42,9 +54,11 @@ services:
       - "8080:8080"
       - "4433:4433"
     depends_on:
+      - minio
       - redis
       - postgres
     links:
+      - minio
       - redis
       - postgres
     volumes:

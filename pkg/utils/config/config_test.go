@@ -57,6 +57,19 @@ var apiConfig = Config{
 			Url:   "redis://redis:6379/",
 			Reset: false,
 		},
+		S3: struct {
+			Endpoint  string `toml:"endpoint"`
+			Bucket    string `toml:"bucket"`
+			Region    string `toml:"region"`
+			AccessKey string `toml:"access_key"`
+			SecretKey string `toml:"secret_key"`
+		}{
+			Endpoint:  "http://minio:9000",
+			Bucket:    "lms",
+			Region:    "us-east-1",
+			AccessKey: "minio",
+			SecretKey: "minio123",
+		},
 	},
 	Middleware: middleware{
 		Jwt: struct {

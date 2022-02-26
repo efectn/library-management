@@ -48,6 +48,14 @@ type db = struct {
 		User     string `toml:"user"`
 		Password string `toml:"password"`
 	}
+
+	S3 struct {
+		Endpoint  string `toml:"endpoint"`
+		Bucket    string `toml:"bucket"`
+		Region    string `toml:"region"`
+		AccessKey string `toml:"access_key"`
+		SecretKey string `toml:"secret_key"`
+	}
 }
 
 type middleware = struct {
