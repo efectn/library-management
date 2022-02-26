@@ -43,14 +43,21 @@ func New(configPart *config.Config) *AppSkel {
 				code := fiber.StatusInternalServerError
 				var messages interface{}
 
+				if !configPart.App.Production {
+					log.Err(err).Msg("")
+				}
+
 				if e, ok := err.(*errors.Error); ok {
-					code = e.Code
 					messages = e.Message
+					code = e.Code
 				}
 
 				if e, ok := err.(*fiber.Error); ok {
 					code = e.Code
-					messages = e.Message
+				}
+
+				if messages == nil {
+					messages = []interface{}{err.Error()}
 				}
 
 				return c.Status(code).JSON(fiber.Map{
@@ -98,7 +105,7 @@ func (app *AppSkel) SetupDB() error {
 		app.Config.DB.Postgres.Port,
 		app.Config.DB.Postgres.User,
 		app.Config.DB.Postgres.Password,
-		app.Config.DB.Postgres.Name)
+		app.Config.DB.Postgres.Name, app.Logger)
 	if err != nil {
 		return err
 	}

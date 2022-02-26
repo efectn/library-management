@@ -10,6 +10,7 @@ import (
 	jwtware "github.com/gofiber/jwt/v3"
 )
 
+var roleController admin.RoleController
 var userController admin.UserController
 var authController controllers.AuthController
 
@@ -35,4 +36,5 @@ func RegisterAPIRoutes(app fiber.Router) {
 
 	admin := app.Group("/admin").Name("admin.")
 	route.CreateResource("user", admin, userController)
+	route.CreateResource("role", admin, roleController)
 }

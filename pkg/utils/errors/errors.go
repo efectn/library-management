@@ -2,7 +2,10 @@ package errors
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/efectn/library-management/pkg/database/ent"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/utils"
 )
 
@@ -27,4 +30,30 @@ func NewErrors(code int, messages ...interface{}) *Error {
 		e.Message = messages
 	}
 	return e
+}
+
+// HandleEntError is a method to handle Ent's errors.
+func HandleEntErrors(err error) error {
+	// Check not found error
+	if ent.IsNotFound(err) {
+		return NewErrors(fiber.StatusNotFound, "The field not found in the database. Please check your field!")
+	}
+
+	// Check constraint errors
+	if ent.IsConstraintError(err) {
+		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+			return NewErrors(fiber.StatusForbidden, "The unique field has created before. Please check your fields!")
+		} else if strings.Contains(err.Error(), "add m2m edge for table") {
+			return NewErrors(fiber.StatusInternalServerError, "Relations not found or incorrect. Please check relations!")
+		}
+
+		return NewErrors(fiber.StatusInternalServerError, err.Error())
+	}
+
+	// Check other errors
+	if err != nil {
+		return NewErrors(fiber.StatusInternalServerError, "An un-handled error occurred!", err)
+	}
+
+	return nil
 }

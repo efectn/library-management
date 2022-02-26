@@ -30,13 +30,24 @@ func Init() *Database {
 	return new(Database)
 }
 
-func (db *Database) SetupEnt(host string, port int, user string, password string, name string) error {
+func (db *Database) SetupEnt(host string, port int, user string, password string, name string, logger ...zerolog.Logger) error {
 	conn, err := sql.Open("pgx", fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", user, password, host, port, name))
 	if err != nil {
 		return err
 	}
 
 	drv := entsql.OpenDB(dialect.Postgres, conn)
+
+	// Setup Logger
+	/*if len(logger) > 0 {
+		drvv := dialect.DebugWithContext(drv, func(ctx context.Context, args ...interface{}) {
+			op := drv.
+				logger[0].Debug().Msgf("entgo: query=%v args=%v", op.Query, args)
+		})
+	}*/
+	/*drvv := dialect.DebugWithContext(drv, func(ctx context.Context, args ...interface{}) {
+		logger[0].Debug().Msgf("entgo: query=%v args=%v", "op.Query", args)
+	})*/
 	db.Ent = ent.NewClient(ent.Driver(drv))
 
 	return nil
