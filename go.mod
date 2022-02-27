@@ -47,6 +47,7 @@ require (
 	github.com/gofiber/storage/s3 v0.0.0-20220210144513-cc5ccf062b5d // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/h2non/bimg v1.1.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.11.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.11.0 // indirect

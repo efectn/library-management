@@ -74,7 +74,7 @@ func (RoleController) Show(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"message": "The role created successfully!",
+		"message": "The role retrieved successfully!",
 		"role":    role,
 	})
 }
@@ -108,7 +108,7 @@ func (RoleController) Update(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"message": "The role created successfully!",
+		"message": "The role updated successfully!",
 		"role":    role,
 	})
 }

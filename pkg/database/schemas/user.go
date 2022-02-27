@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/schema/field"
 	gen "github.com/efectn/library-management/pkg/database/ent"
 	"github.com/efectn/library-management/pkg/database/ent/hook"
+	"github.com/efectn/library-management/pkg/globals/api"
 )
 
 // User holds the schema definition for the User entity.
@@ -27,6 +28,8 @@ func (User) Fields() []ent.Field {
 			NotEmpty(),
 		field.String("name").
 			NotEmpty(),
+		field.String("avatar").
+			Optional(),
 		field.String("phone").
 			Optional(),
 		field.String("city").
@@ -67,6 +70,8 @@ func (User) Hooks() []ent.Hook {
 					for _, field := range m.Fields() {
 						if v, _ := m.Field(field); v == "" {
 							switch field {
+							case "avatar":
+								m.ResetAvatar()
 							case "phone":
 								m.ResetPhone()
 							case "city":
@@ -87,6 +92,21 @@ func (User) Hooks() []ent.Hook {
 				})
 			},
 			ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne,
+		),
+		hook.On(
+			func(next ent.Mutator) ent.Mutator {
+				return hook.UserFunc(func(ctx context.Context, m *gen.UserMutation) (ent.Value, error) {
+					//return "", errors.New("avatars/" + fmt.Sprint(m.Avatar()))
+					//api.App.Logger.Debug().Msg("avatars/" + "avatar")
+					// TODO: Not working. Need to get avatar.
+					if err := api.App.DB.S3.Delete("avatars/" + "avatar"); err != nil {
+						return "", err
+					}
+
+					return next.Mutate(ctx, m)
+				})
+			},
+			ent.OpDeleteOne|ent.OpDelete,
 		),
 	}
 }

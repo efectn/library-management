@@ -41,6 +41,7 @@ func init() {
 	role.UpdateDefaultUpdatedAt = roleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userHooks := schemas.User{}.Hooks()
 	user.Hooks[0] = userHooks[0]
+	user.Hooks[1] = userHooks[1]
 	userFields := schemas.User{}.Fields()
 	_ = userFields
 	// userDescEmail is the schema descriptor for email field.
@@ -56,11 +57,11 @@ func init() {
 	// user.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	user.NameValidator = userDescName.Validators[0].(func(string) error)
 	// userDescCreatedAt is the schema descriptor for created_at field.
-	userDescCreatedAt := userFields[9].Descriptor()
+	userDescCreatedAt := userFields[10].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
 	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
 	// userDescUpdatedAt is the schema descriptor for updated_at field.
-	userDescUpdatedAt := userFields[10].Descriptor()
+	userDescUpdatedAt := userFields[11].Descriptor()
 	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.

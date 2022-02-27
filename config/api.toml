@@ -13,6 +13,14 @@ http2-support = false
 cert-file = "./storage/selfsigned.crt"
 key-file = "./storage/selfsigned.key"
 
+[app.files]
+max-size = 5 # As MB
+allowed-mimetypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+]
+
 [app.hash]
 bcrypt-cost = 10 # min: 4, max: 31
 

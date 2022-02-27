@@ -19,6 +19,8 @@ const (
 	FieldPassword = "password"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldAvatar holds the string denoting the avatar field in the database.
+	FieldAvatar = "avatar"
 	// FieldPhone holds the string denoting the phone field in the database.
 	FieldPhone = "phone"
 	// FieldCity holds the string denoting the city field in the database.
@@ -52,6 +54,7 @@ var Columns = []string{
 	FieldEmail,
 	FieldPassword,
 	FieldName,
+	FieldAvatar,
 	FieldPhone,
 	FieldCity,
 	FieldState,
@@ -85,7 +88,7 @@ func ValidColumn(column string) bool {
 //	import _ "github.com/efectn/library-management/pkg/database/ent/runtime"
 //
 var (
-	Hooks [1]ent.Hook
+	Hooks [2]ent.Hook
 	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	EmailValidator func(string) error
 	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.

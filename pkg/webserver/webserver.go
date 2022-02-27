@@ -39,6 +39,7 @@ func New(configPart *config.Config) *AppSkel {
 			ServerHeader:          configPart.App.Name,
 			Prefork:               configPart.App.Prefork,
 			DisableStartupMessage: true,
+			BodyLimit:             int(configPart.App.Files.MaxSize+15) * 1024 * 1024,
 			ErrorHandler: func(c *fiber.Ctx, err error) error {
 				code := fiber.StatusInternalServerError
 				var messages interface{}

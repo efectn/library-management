@@ -22,6 +22,8 @@ type User struct {
 	Password string `json:"password,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Avatar holds the value of the "avatar" field.
+	Avatar string `json:"avatar,omitempty"`
 	// Phone holds the value of the "phone" field.
 	Phone string `json:"phone,omitempty"`
 	// City holds the value of the "city" field.
@@ -68,7 +70,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case user.FieldID, user.FieldZipCode:
 			values[i] = new(sql.NullInt64)
-		case user.FieldEmail, user.FieldPassword, user.FieldName, user.FieldPhone, user.FieldCity, user.FieldState, user.FieldCountry, user.FieldAddress:
+		case user.FieldEmail, user.FieldPassword, user.FieldName, user.FieldAvatar, user.FieldPhone, user.FieldCity, user.FieldState, user.FieldCountry, user.FieldAddress:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -110,6 +112,12 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				u.Name = value.String
+			}
+		case user.FieldAvatar:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field avatar", values[i])
+			} else if value.Valid {
+				u.Avatar = value.String
 			}
 		case user.FieldPhone:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -198,6 +206,8 @@ func (u *User) String() string {
 	builder.WriteString(u.Password)
 	builder.WriteString(", name=")
 	builder.WriteString(u.Name)
+	builder.WriteString(", avatar=")
+	builder.WriteString(u.Avatar)
 	builder.WriteString(", phone=")
 	builder.WriteString(u.Phone)
 	builder.WriteString(", city=")

@@ -114,6 +114,13 @@ func Name(v string) predicate.User {
 	})
 }
 
+// Avatar applies equality check predicate on the "avatar" field. It's identical to AvatarEQ.
+func Avatar(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAvatar), v))
+	})
+}
+
 // Phone applies equality check predicate on the "phone" field. It's identical to PhoneEQ.
 func Phone(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -500,6 +507,131 @@ func NameEqualFold(v string) predicate.User {
 func NameContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
+	})
+}
+
+// AvatarEQ applies the EQ predicate on the "avatar" field.
+func AvatarEQ(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarNEQ applies the NEQ predicate on the "avatar" field.
+func AvatarNEQ(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarIn applies the In predicate on the "avatar" field.
+func AvatarIn(vs ...string) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldAvatar), v...))
+	})
+}
+
+// AvatarNotIn applies the NotIn predicate on the "avatar" field.
+func AvatarNotIn(vs ...string) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldAvatar), v...))
+	})
+}
+
+// AvatarGT applies the GT predicate on the "avatar" field.
+func AvatarGT(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarGTE applies the GTE predicate on the "avatar" field.
+func AvatarGTE(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarLT applies the LT predicate on the "avatar" field.
+func AvatarLT(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarLTE applies the LTE predicate on the "avatar" field.
+func AvatarLTE(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarContains applies the Contains predicate on the "avatar" field.
+func AvatarContains(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarHasPrefix applies the HasPrefix predicate on the "avatar" field.
+func AvatarHasPrefix(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarHasSuffix applies the HasSuffix predicate on the "avatar" field.
+func AvatarHasSuffix(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarIsNil applies the IsNil predicate on the "avatar" field.
+func AvatarIsNil() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAvatar)))
+	})
+}
+
+// AvatarNotNil applies the NotNil predicate on the "avatar" field.
+func AvatarNotNil() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAvatar)))
+	})
+}
+
+// AvatarEqualFold applies the EqualFold predicate on the "avatar" field.
+func AvatarEqualFold(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarContainsFold applies the ContainsFold predicate on the "avatar" field.
+func AvatarContainsFold(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldAvatar), v))
 	})
 }
 

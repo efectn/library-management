@@ -27,6 +27,10 @@ type app = struct {
 	Hash struct {
 		BcryptCost int `toml:"bcrypt-cost"`
 	}
+	Files struct {
+		MaxSize          int64    `toml:"max-size"`
+		AllowedMimetypes []string `toml:"allowed-mimetypes"`
+	}
 }
 
 type logger = struct {

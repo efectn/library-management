@@ -30,6 +30,17 @@ var apiConfig = Config{
 		Hash: struct {
 			BcryptCost int `toml:"bcrypt-cost"`
 		}{BcryptCost: 10},
+		Files: struct {
+			MaxSize          int64    `toml:"max-size"`
+			AllowedMimetypes []string `toml:"allowed-mimetypes"`
+		}{
+			MaxSize: 5,
+			AllowedMimetypes: []string{
+				"image/jpeg",
+				"image/png",
+				"image/webp",
+			},
+		},
 	},
 	Logger: logger{
 		TimeFormat: "",

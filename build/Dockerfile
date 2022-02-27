@@ -3,7 +3,7 @@ WORKDIR /app
 COPY go.* ./
 RUN go mod download
 COPY . .
-RUN apk update && apk add upx ca-certificates openssl && update-ca-certificates
+RUN apk update && apk add upx ca-certificates openssl vips && update-ca-certificates
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o /bin/api-binary ./cmd/api/main.go
 RUN upx -9 /bin/api-binary
 

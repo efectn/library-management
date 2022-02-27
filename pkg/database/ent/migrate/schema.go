@@ -40,6 +40,7 @@ var (
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
+		{Name: "avatar", Type: field.TypeString, Nullable: true},
 		{Name: "phone", Type: field.TypeString, Nullable: true},
 		{Name: "city", Type: field.TypeString, Nullable: true},
 		{Name: "state", Type: field.TypeString, Nullable: true},

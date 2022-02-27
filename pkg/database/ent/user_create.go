@@ -39,6 +39,20 @@ func (uc *UserCreate) SetName(s string) *UserCreate {
 	return uc
 }
 
+// SetAvatar sets the "avatar" field.
+func (uc *UserCreate) SetAvatar(s string) *UserCreate {
+	uc.mutation.SetAvatar(s)
+	return uc
+}
+
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (uc *UserCreate) SetNillableAvatar(s *string) *UserCreate {
+	if s != nil {
+		uc.SetAvatar(*s)
+	}
+	return uc
+}
+
 // SetPhone sets the "phone" field.
 func (uc *UserCreate) SetPhone(s string) *UserCreate {
 	uc.mutation.SetPhone(s)
@@ -338,6 +352,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldName,
 		})
 		_node.Name = value
+	}
+	if value, ok := uc.mutation.Avatar(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldAvatar,
+		})
+		_node.Avatar = value
 	}
 	if value, ok := uc.mutation.Phone(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
