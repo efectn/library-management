@@ -1,9 +1,13 @@
 package storage
 
 import (
+	"context"
+	"fmt"
 	"io"
 	"path/filepath"
+	"time"
 
+	"github.com/efectn/library-management/pkg/database/ent"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils/errors"
 	"github.com/gofiber/fiber/v2"
@@ -83,5 +87,39 @@ func UploadFile(c *fiber.Ctx, opts FileOpts) error {
 	// Do custom user functions
 	opts.DoFunc()
 
+	return nil
+}
+
+func UpdateAvatar(c *fiber.Ctx, uu *ent.UserUpdateOne, name string, removeAvatar bool) error {
+	time := fmt.Sprint(time.Now().Unix())
+	if removeAvatar {
+		removeOldAvatar(uu)
+		uu.ClearAvatar()
+	} else {
+		removeOldAvatar(uu)
+		err := UploadFile(c, FileOpts{
+			FormName: "avatar",
+			SavePath: "avatars/" + name + "-" + time + "-avatar",
+			Width:    256,
+			Height:   256,
+			DoFunc: func() {
+				uu.SetAvatar(name + "-" + time + "-avatar.webp")
+			},
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func removeOldAvatar(uu *ent.UserUpdateOne) error {
+	avatar, err := uu.Mutation().OldAvatar(context.Background())
+	if err != nil {
+		return err
+	}
+
+	_ = api.App.DB.S3.Delete("avatars/" + avatar)
 	return nil
 }

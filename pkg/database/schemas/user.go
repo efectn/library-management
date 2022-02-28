@@ -12,7 +12,9 @@ import (
 	"github.com/efectn/library-management/pkg/database/ent/hook"
 	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
+	"github.com/efectn/library-management/pkg/utils/convert"
 	"github.com/efectn/library-management/pkg/utils/database"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User holds the schema definition for the User entity.
@@ -90,10 +92,65 @@ func (User) Hooks() []ent.Hook {
 						}
 					}
 
+					// Hash password
+					if v, _ := m.Field("password"); v != "" {
+						password, err := bcrypt.GenerateFromPassword(convert.UnsafeBytes(v.(string)), api.App.Config.App.Hash.BcryptCost)
+						if err != nil {
+							return "", err
+						}
+
+						m.SetPassword(convert.UnsafeString(password))
+					}
+
 					return next.Mutate(ctx, m)
 				})
 			},
-			ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne,
+			ent.OpCreate,
+		),
+		hook.On(
+			func(next ent.Mutator) ent.Mutator {
+				return hook.UserFunc(func(ctx context.Context, m *gen.UserMutation) (ent.Value, error) {
+					for _, field := range m.Fields() {
+						if v, _ := m.Field(field); v == "" {
+							switch field {
+							case "email":
+								m.ResetEmail()
+							case "password":
+								m.ResetPassword()
+							case "name":
+								m.ResetName()
+							case "avatar":
+								m.ResetAvatar()
+							case "phone":
+								m.ResetPhone()
+							case "city":
+								m.ResetCity()
+							case "state":
+								m.ResetState()
+							case "country":
+								m.ResetCountry()
+							case "address":
+								m.ResetAddress()
+							case "zip_code":
+								m.ResetZipCode()
+							}
+						}
+					}
+
+					// Hash password
+					if v, _ := m.Field("password"); v != nil {
+						password, err := bcrypt.GenerateFromPassword(convert.UnsafeBytes(v.(string)), api.App.Config.App.Hash.BcryptCost)
+						if err != nil {
+							return "", err
+						}
+
+						m.SetPassword(convert.UnsafeString(password))
+					}
+
+					return next.Mutate(ctx, m)
+				})
+			},
+			ent.OpUpdate|ent.OpUpdateOne,
 		),
 		hook.On(
 			func(next ent.Mutator) ent.Mutator {

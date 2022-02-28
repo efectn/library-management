@@ -8,7 +8,6 @@ import (
 	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils"
-	"github.com/efectn/library-management/pkg/utils/convert"
 	"github.com/efectn/library-management/pkg/utils/errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -21,7 +20,7 @@ type RegisterRequest struct {
 	Email    string `validate:"required,email" json:"email"`
 	Password string `validate:"required,min=8" json:"password"`
 	Name     string `validate:"required,min=3,max=32" json:"name"`
-	Phone    string `validate:"e164" json:"phone,omitempty"`
+	Phone    string `validate:"omitempty,e164" json:"phone,omitempty"`
 	City     string `json:"city,omitempty"`
 	State    string `json:"state,omitempty"`
 	Country  string `json:"country,omitempty"`
@@ -40,13 +39,8 @@ func (AuthController) Register(c *fiber.Ctx) error {
 		return errors.NewErrors(fiber.StatusForbidden, err)
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
-	if err != nil {
-		return err
-	}
-
-	_, err = api.App.DB.Ent.User.Create().SetEmail(u.Email).
-		SetPassword(convert.UnsafeString(password)).
+	_, err := api.App.DB.Ent.User.Create().SetEmail(u.Email).
+		SetPassword(u.Password).
 		SetName(u.Name).
 		SetPhone(u.Phone).
 		SetCity(u.City).

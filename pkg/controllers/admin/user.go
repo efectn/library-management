@@ -10,12 +10,10 @@ import (
 	euser "github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils"
-	"github.com/efectn/library-management/pkg/utils/convert"
 	"github.com/efectn/library-management/pkg/utils/database"
 	"github.com/efectn/library-management/pkg/utils/errors"
 	"github.com/efectn/library-management/pkg/utils/storage"
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserController struct{}
@@ -68,13 +66,8 @@ func (UserController) Store(c *fiber.Ctx) error {
 		return errors.NewErrors(fiber.StatusForbidden, err)
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
-	if err != nil {
-		return err
-	}
-
 	uc := api.App.DB.Ent.User.Create().SetEmail(u.Email).
-		SetPassword(convert.UnsafeString(password)).
+		SetPassword(u.Password).
 		SetName(u.Name).
 		SetPhone(u.Phone).
 		SetCity(u.City).
@@ -85,7 +78,7 @@ func (UserController) Store(c *fiber.Ctx) error {
 		AddRoleIDs(u.RoleIDs...)
 
 	time := fmt.Sprint(time.Now().Unix())
-	err = storage.UploadFile(c, storage.FileOpts{
+	if err := storage.UploadFile(c, storage.FileOpts{
 		FormName: "avatar",
 		SavePath: "avatars/" + u.Name + "-" + time + "-avatar",
 		Width:    256,
@@ -93,8 +86,7 @@ func (UserController) Store(c *fiber.Ctx) error {
 		DoFunc: func() {
 			uc.SetAvatar(u.Name + "-" + time + "-avatar.webp")
 		},
-	})
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 
@@ -147,26 +139,11 @@ func (UserController) Update(c *fiber.Ctx) error {
 
 	uu := api.App.DB.Ent.User.UpdateOneID(id)
 
-	// Update fields if given
-	if u.Email != "" {
-		uu.SetEmail(u.Email)
-	}
-
-	if u.Password != "" {
-		password, err := bcrypt.GenerateFromPassword([]byte(u.Password), api.App.Config.App.Hash.BcryptCost)
-		if err != nil {
-			return err
-		}
-
-		uu.SetPassword(convert.UnsafeString(password))
-	}
-
-	if u.Name != "" {
-		uu.SetName(u.Name)
-	}
-
-	// Update optional fields
-	uu.SetPhone(u.Phone).
+	// Update fields
+	uu.SetName(u.Name).
+		SetPassword(u.Password).
+		SetEmail(u.Email).
+		SetPhone(u.Phone).
 		SetCity(u.City).
 		SetState(u.State).
 		SetCountry(u.Country).
@@ -179,31 +156,8 @@ func (UserController) Update(c *fiber.Ctx) error {
 	}
 
 	// Update & remove avatar
-	time := fmt.Sprint(time.Now().Unix())
-	if u.RemoveAvatar {
-		avatar, err := uu.Mutation().OldAvatar(context.Background())
-		if err != nil {
-			return err
-		}
-
-		if err := api.App.DB.S3.Delete("avatars/" + avatar); err != nil {
-			return err
-		}
-
-		uu.ClearAvatar()
-	} else {
-		err = storage.UploadFile(c, storage.FileOpts{
-			FormName: "avatar",
-			SavePath: "avatars/" + u.Name + "-" + time + "-avatar",
-			Width:    256,
-			Height:   256,
-			DoFunc: func() {
-				uu.SetAvatar(u.Name + "-" + time + "-avatar.webp")
-			},
-		})
-		if err != nil {
-			return err
-		}
+	if err := storage.UpdateAvatar(c, uu, u.Name, u.RemoveAvatar); err != nil {
+		return err
 	}
 
 	user, err := uu.Save(context.Background())
