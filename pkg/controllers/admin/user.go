@@ -11,6 +11,7 @@ import (
 	"github.com/efectn/library-management/pkg/globals/api"
 	"github.com/efectn/library-management/pkg/utils"
 	"github.com/efectn/library-management/pkg/utils/convert"
+	"github.com/efectn/library-management/pkg/utils/database"
 	"github.com/efectn/library-management/pkg/utils/errors"
 	"github.com/efectn/library-management/pkg/utils/storage"
 	"github.com/gofiber/fiber/v2"
@@ -100,6 +101,9 @@ func (UserController) Store(c *fiber.Ctx) error {
 	// Create user
 	user, err := uc.Save(context.Background())
 	if err = errors.HandleEntErrors(err); err != nil {
+		// Remove created avatar
+		_ = api.App.DB.S3.Delete("avatars/" + u.Name + "-" + time + "-avatar.webp")
+
 		return err
 	}
 
@@ -219,9 +223,17 @@ func (UserController) Destroy(c *fiber.Ctx) error {
 		return err
 	}
 
-	// TODO: Remove user avatar.
-	err = api.App.DB.Ent.User.DeleteOneID(id).Exec(context.Background())
+	tx, err := api.App.DB.Ent.Tx(context.Background())
+	if err != nil {
+		return err
+	}
+
+	err = tx.User.DeleteOneID(id).Exec(context.Background())
 	if err = errors.HandleEntErrors(err); err != nil {
+		return database.EntRollback(tx, err)
+	}
+
+	if err = tx.Commit(); err != nil {
 		return err
 	}
 

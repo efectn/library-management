@@ -10,7 +10,9 @@ import (
 	"entgo.io/ent/schema/field"
 	gen "github.com/efectn/library-management/pkg/database/ent"
 	"github.com/efectn/library-management/pkg/database/ent/hook"
+	"github.com/efectn/library-management/pkg/database/ent/user"
 	"github.com/efectn/library-management/pkg/globals/api"
+	"github.com/efectn/library-management/pkg/utils/database"
 )
 
 // User holds the schema definition for the User entity.
@@ -96,11 +98,18 @@ func (User) Hooks() []ent.Hook {
 		hook.On(
 			func(next ent.Mutator) ent.Mutator {
 				return hook.UserFunc(func(ctx context.Context, m *gen.UserMutation) (ent.Value, error) {
-					//return "", errors.New("avatars/" + fmt.Sprint(m.Avatar()))
-					//api.App.Logger.Debug().Msg("avatars/" + "avatar")
-					// TODO: Not working. Need to get avatar.
-					if err := api.App.DB.S3.Delete("avatars/" + "avatar"); err != nil {
-						return "", err
+					if id, e := m.ID(); e {
+						tx, err := m.Tx()
+						if err != nil {
+							return "", database.EntRollback(tx, err)
+						}
+
+						user, err := tx.User.Query().Where(user.IDEQ(id)).First(ctx)
+						if err != nil {
+							return "", database.EntRollback(tx, err)
+						}
+
+						_ = api.App.DB.S3.Delete("avatars/" + user.Avatar)
 					}
 
 					return next.Mutate(ctx, m)
