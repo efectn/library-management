@@ -111,7 +111,7 @@ func (User) Hooks() []ent.Hook {
 			func(next ent.Mutator) ent.Mutator {
 				return hook.UserFunc(func(ctx context.Context, m *gen.UserMutation) (ent.Value, error) {
 					for _, field := range m.Fields() {
-						if v, _ := m.Field(field); v == "" && api.App.Config != nil {
+						if v, _ := m.Field(field); v == "" {
 							switch field {
 							case "email":
 								m.ResetEmail()
@@ -138,7 +138,7 @@ func (User) Hooks() []ent.Hook {
 					}
 
 					// Hash password
-					if v, _ := m.Field("password"); v != nil {
+					if v, _ := m.Field("password"); v != nil && api.App.Config != nil {
 						password, err := bcrypt.GenerateFromPassword(convert.UnsafeBytes(v.(string)), api.App.Config.App.Hash.BcryptCost)
 						if err != nil {
 							return "", err
