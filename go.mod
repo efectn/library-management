@@ -10,8 +10,10 @@ require (
 )
 
 require (
-	entgo.io/ent v0.10.0
+	entgo.io/ent v0.10.1
 	github.com/dgrr/http2 v0.3.4
+	github.com/gofiber/storage/s3 v0.0.0-20220210144513-cc5ccf062b5d
+	github.com/h2non/bimg v1.1.7
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
@@ -19,7 +21,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.3.4 // indirect
+	ariga.io/atlas v0.3.7-0.20220303204946-787354f533c3 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.13.0 // indirect
@@ -44,10 +46,8 @@ require (
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/gofiber/storage/s3 v0.0.0-20220210144513-cc5ccf062b5d // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/h2non/bimg v1.1.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.11.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.11.0 // indirect
