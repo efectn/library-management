@@ -4,18 +4,20 @@ go 1.17
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/fiber/v2 v2.27.0
-	github.com/klauspost/compress v1.14.3 // indirect
-	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
+	github.com/gofiber/fiber/v2 v2.29.0
+	github.com/klauspost/compress v1.15.0 // indirect
+	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
 )
 
 require (
 	entgo.io/ent v0.10.0
 	github.com/dgrr/http2 v0.3.4
+	github.com/gofiber/storage/s3 v0.0.0-20220210144513-cc5ccf062b5d
+	github.com/h2non/bimg v1.1.7
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
-	github.com/valyala/fasthttp v1.33.0
+	github.com/valyala/fasthttp v1.34.0
 )
 
 require (
@@ -44,10 +46,8 @@ require (
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/gofiber/storage/s3 v0.0.0-20220210144513-cc5ccf062b5d // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/h2non/bimg v1.1.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.11.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.11.0 // indirect
