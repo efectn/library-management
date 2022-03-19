@@ -93,7 +93,7 @@ func (User) Hooks() []ent.Hook {
 					}
 
 					// Hash password
-					if v, _ := m.Field("password"); v != "" {
+					if v, _ := m.Field("password"); v != "" && api.App.Config != nil {
 						password, err := bcrypt.GenerateFromPassword(convert.UnsafeBytes(v.(string)), api.App.Config.App.Hash.BcryptCost)
 						if err != nil {
 							return "", err
@@ -138,7 +138,7 @@ func (User) Hooks() []ent.Hook {
 					}
 
 					// Hash password
-					if v, _ := m.Field("password"); v != nil {
+					if v, _ := m.Field("password"); v != nil && api.App.Config != nil {
 						password, err := bcrypt.GenerateFromPassword(convert.UnsafeBytes(v.(string)), api.App.Config.App.Hash.BcryptCost)
 						if err != nil {
 							return "", err
