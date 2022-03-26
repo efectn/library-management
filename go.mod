@@ -73,7 +73,7 @@ require (
 require (
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/gofiber/jwt/v3 v3.2.8
+	github.com/gofiber/jwt/v3 v3.2.9
 	github.com/gofiber/storage/redis v0.0.0-20220318090428-551f99d5d2fa
 	github.com/golang-jwt/jwt/v4 v4.4.0
 	github.com/rs/zerolog v1.26.1
