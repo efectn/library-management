@@ -26,7 +26,7 @@ jobs:
           stable: false
           go-version: ${{ matrix.go-version }}
       - name: Install vips
-        run: sudo apt-get install libvips-dev --no-install-recommends -yq
+        run: sudo apt-get update && sudo apt-get install libvips-dev --no-install-recommends -yq
       - name: Fetch Repository
         uses: actions/checkout@v2
       - name: Run Tests
