@@ -11,7 +11,7 @@ require (
 
 require (
 	entgo.io/ent v0.10.1
-	github.com/dgrr/http2 v0.3.4
+	github.com/dgrr/http2 v0.3.5
 	github.com/gofiber/storage/s3 v0.0.0-20220318090428-551f99d5d2fa
 	github.com/h2non/bimg v1.1.7
 	github.com/jackc/pgx/v4 v4.15.0
