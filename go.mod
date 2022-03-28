@@ -75,7 +75,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/gofiber/jwt/v3 v3.2.9
 	github.com/gofiber/storage/redis v0.0.0-20220318090428-551f99d5d2fa
-	github.com/golang-jwt/jwt/v4 v4.4.0
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.1
 	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
