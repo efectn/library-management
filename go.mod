@@ -17,7 +17,7 @@ require (
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
-	github.com/valyala/fasthttp v1.34.0
+	github.com/valyala/fasthttp v1.36.0
 )
 
 require (
