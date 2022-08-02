@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/fiber/v2 v2.30.0
+	github.com/gofiber/fiber/v2 v2.36.0
 	github.com/klauspost/compress v1.15.1 // indirect
 	golang.org/x/sys v0.0.0-20220318055525-2edf467146b5 // indirect
 )
@@ -17,7 +17,7 @@ require (
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
-	github.com/valyala/fasthttp v1.34.0
+	github.com/valyala/fasthttp v1.38.0
 )
 
 require (
