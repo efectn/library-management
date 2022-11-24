@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/fiber/v2 v2.30.0
-	github.com/klauspost/compress v1.15.1 // indirect
-	golang.org/x/sys v0.0.0-20220318055525-2edf467146b5 // indirect
+	github.com/gofiber/fiber/v2 v2.40.1
+	github.com/klauspost/compress v1.15.9 // indirect
+	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
-	github.com/valyala/fasthttp v1.34.0
+	github.com/valyala/fasthttp v1.41.0
 )
 
 require (
@@ -59,8 +59,12 @@ require (
 	github.com/jackc/pgtype v1.10.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fastrand v1.1.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
@@ -73,9 +77,9 @@ require (
 require (
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/gofiber/jwt/v3 v3.2.9
+	github.com/gofiber/jwt/v3 v3.3.4
 	github.com/gofiber/storage/redis v0.0.0-20220318090428-551f99d5d2fa
-	github.com/golang-jwt/jwt/v4 v4.4.0
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.1
 	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
