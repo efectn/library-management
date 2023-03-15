@@ -3,10 +3,10 @@ module github.com/efectn/library-management
 go 1.18
 
 require (
-	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/gofiber/fiber/v2 v2.30.0
-	github.com/klauspost/compress v1.15.1 // indirect
-	golang.org/x/sys v0.0.0-20220318055525-2edf467146b5 // indirect
+	github.com/klauspost/compress v1.16.3 // indirect
+	golang.org/x/sys v0.6.0 // indirect
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.6
-	github.com/valyala/fasthttp v1.34.0
+	github.com/valyala/fasthttp v1.45.0
 )
 
 require (
@@ -65,8 +65,8 @@ require (
 	github.com/valyala/fastrand v1.1.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/zclconf/go-cty v1.10.0 // indirect
-	golang.org/x/mod v0.5.1 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/mod v0.8.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
@@ -78,5 +78,5 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.0
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.1
-	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
+	golang.org/x/crypto v0.7.0
 )
